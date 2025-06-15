@@ -19,7 +19,6 @@ public class User {
     private ObjectId id;
 
     private String firstName;
-    private String email;
     private String lastName;
     private String phone;
     private String password;
