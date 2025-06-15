@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,7 +24,6 @@ public class UserService {
     }
 
     @Autowired
-    private MongoTemplate mongoTemplate;
     public User registerUser(String firstName, String lastName, String phone, String password){
         User user = new User(firstName, lastName, phone, password);
         userRepository.insert(user); //Insert
