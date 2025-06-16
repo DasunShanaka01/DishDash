@@ -13,22 +13,17 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers() {
         return userRepository.findAll();
-
     }
 
-    public Optional<User>findById(ObjectId id){
+    public Optional<User> findById(ObjectId id) {
         return userRepository.findById(id);
     }
 
-    @Autowired
-    public User registerUser(String firstName, String lastName, String phone, String password){
+    public User registerUser(String firstName, String lastName, String phone, String password) {
         User user = new User(firstName, lastName, phone, password);
-        userRepository.insert(user); //Insert
-
+        userRepository.insert(user); // Insert into the database
         return user;
     }
-
 }

@@ -1,0 +1,119 @@
+import React, { useState } from 'react';
+import axios from 'axios';
+import './Register.css'; // Assuming you have a CSS file for styles
+
+const Register = () => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    phone: '',
+    password: '',
+    confirmPassword: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { firstName, lastName, phone, password, confirmPassword } = formData;
+
+    if (password !== confirmPassword) {
+      alert('Passwords do not match!');
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://localhost:8080/api/v1/reg', {
+        firstName,
+        lastName,
+        phone,
+        password,
+      });
+      console.log('User registered successfully:', response.data);
+      alert('User registered successfully!');
+    } catch (error) {
+      console.error('Error registering user:', error);
+      alert('Registration failed. Please try again.');
+    }
+  };
+
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <form
+        className="bg-white p-6 rounded-lg shadow-md w-96"
+        onSubmit={handleSubmit}
+      >
+        <h2 className="text-2xl font-bold mb-4 text-center">Register</h2>
+        <div className="mb-4">
+          <label className="block mb-1 text-gray-600">First Name</label>
+          <input
+            type="text"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-md"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block mb-1 text-gray-600">Last Name</label>
+          <input
+            type="text"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-md"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block mb-1 text-gray-600">Phone</label>
+          <input
+            type="tel"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-md"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block mb-1 text-gray-600">Password</label>
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-md"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block mb-1 text-gray-600">Confirm Password</label>
+          <input
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-md"
+            required
+          />
+        </div>
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
+        >
+          Register
+        </button>
+      </form>
+    </div>
+  );
+};
+
+export default Register;
