@@ -38,4 +38,6 @@ public class User {
     public String getIdAsString() {
         return id != null ? id.toHexString() : null;
     }
+
+    
 }

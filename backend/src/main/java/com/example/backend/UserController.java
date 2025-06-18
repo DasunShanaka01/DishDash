@@ -3,6 +3,7 @@ package com.example.backend;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,5 +51,38 @@ public class UserController {
 
     }
 
+    //Login
+    @PostMapping("/login")
 
+    //The login method is public and will handle the request. It takes a JSON payload (received as a map of key-value pairs) as input
+    //Key: "phone"
+    // Value: "0771234567" (the user's phone number used for login)
+    // Key: "password"
+    // Value: "securePass123" (the user's password)
+    public ResponseEntity<String> login(@RequestBody Map<String, String> payload) {
+    // When multiple requests are being processed concurrently, logs can become cluttered.
+    //A unique requestId helps to correlate all log entries related to a specific request, making it easier to trace the flow of execution.
+    String requestId = UUID.randomUUID().toString();
+    
+    //Logs the request ID and the received payload to the console.
+    System.out.println("Request ID: " + requestId + ", Payload received: " + payload);
+    String phoneNumber = payload.get("phone");
+    String password = payload.get("password");
+    
+    //Logs the phone number and password received in the payload.
+    //This login method return true execute in if part and false in else part. 
+    if (userService.login(phoneNumber, password)) {
+        System.out.println("Request ID: " + requestId + ", Login successful for phone: " + phoneNumber);
+        return new ResponseEntity<>("Login successful", HttpStatus.OK);
+    } else {
+        System.out.println("Request ID: " + requestId + ", Invalid login attempt for phone: " + phoneNumber);
+        return new ResponseEntity<>("Invalid phone number or password", HttpStatus.UNAUTHORIZED);
+    }
 }
+
+
+}   
+
+
+
+

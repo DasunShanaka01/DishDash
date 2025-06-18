@@ -27,4 +27,28 @@ public class UserService {
         userRepository.insert(user); // Insert into the database
         return user;
     }
+
+    //Find user by phone
+    public Optional<User> findByPhone(String phone) {
+        return userRepository.findByPhone(phone); // Custom query to find a user by email
+
+    }
+
+    public boolean login(String phoneNumber,String password){
+        Optional<User> user = findByPhone(phoneNumber); // Find user by phone number
+        if (user.isPresent()) {
+            String dbPassword = user.get().getPassword(); // Get the password from the database
+            System.out.println("Database password: " + dbPassword); // Print database password
+            System.out.println("Provided password: " + password); // Print provided password
+            return dbPassword.equals(password); // Check if the password matches
+        }
+        else{
+            System.out.println("User not found for phone: " + phoneNumber);
+            return false; // Return false if user not found
+        }
+        
+    }
+
+
+
 }
