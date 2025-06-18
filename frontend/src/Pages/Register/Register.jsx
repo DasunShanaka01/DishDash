@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 import axios from 'axios';
-import './Register.css'; 
+import './Register.css';
+import { useNavigate } from 'react-router-dom'; 
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -18,6 +19,8 @@ const Register = () => {
       [name]: value,
     }));
   };
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,6 +40,7 @@ const Register = () => {
       });
       console.log('User registered successfully:', response.data);
       alert('User registered successfully!');
+      navigate('/Login'); // Redirect to login page after successful registration
     } catch (error) {
       console.error('Error registering user:', error);
       alert('Registration failed. Please try again.');
