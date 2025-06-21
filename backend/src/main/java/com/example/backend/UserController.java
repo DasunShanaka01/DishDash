@@ -69,12 +69,14 @@ public class UserController {
     System.out.println("Request ID: " + requestId + ", Payload received: " + payload);
     String phoneNumber = payload.get("phone");
     String password = payload.get("password");
-    
+
+    Optional<User> user = userService.findByPhone(phoneNumber);
+
     //Logs the phone number and password received in the payload.
     //This login method return true execute in if part and false in else part. 
-    if (userService.login(phoneNumber, password)) {
+    if (user.isPresent() && userService.verifyPassword(user.get(), password)) {
         System.out.println("Request ID: " + requestId + ", Login successful for phone: " + phoneNumber);
-        session.setAttribute("phone", phoneNumber); // Store phone number in session
+        session.setAttribute("userId", user.get().getId().toHexString()); // Store user ID in session
         return new ResponseEntity<>("Login successful", HttpStatus.OK);
     } else {
         System.out.println("Request ID: " + requestId + ", Invalid login attempt for phone: " + phoneNumber);
@@ -85,23 +87,17 @@ public class UserController {
 
     @GetMapping("/check-session")
     public ResponseEntity<String> checkSession(HttpSession session) {
-    String phoneNumber = (String) session.getAttribute("phone");
-    
-    if (phoneNumber != null) {
-        // Log active session
-        System.out.println("Active session for phone: " + phoneNumber);
-        
-        // Return active session response
-        return new ResponseEntity<>("Session active for phone: " + phoneNumber, HttpStatus.OK);
+    String userId = (String) session.getAttribute("userId");
+
+    if (userId != null) {
+        System.out.println("Active session for user ID: " + userId);
+        return new ResponseEntity<>("Session active for user ID: " + userId, HttpStatus.OK);
     } else {
-        // Log no active session
         System.out.println("No active session found.");
-        
-        // Return unauthorized response
         return new ResponseEntity<>("No active session", HttpStatus.UNAUTHORIZED);
     }
+}
 
-    }
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpSession session) {

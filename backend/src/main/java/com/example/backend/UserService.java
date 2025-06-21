@@ -49,6 +49,11 @@ public class UserService {
         
     }
 
+    public boolean verifyPassword(User user, String password) {
+    return user.getPassword().equals(password); // Compare passwords
+    }
+
+
 
 
 }
