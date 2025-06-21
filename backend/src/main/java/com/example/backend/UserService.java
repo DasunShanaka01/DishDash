@@ -53,6 +53,15 @@ public class UserService {
     return user.getPassword().equals(password); // Compare passwords
     }
 
+    //Update user information
+    public void updateUser(User user) {
+        userRepository.save(user); // Save the updated user information to the database 
+
+    }
+
+    public void deleteUser(ObjectId id) {
+        userRepository.deleteById(id); // Delete user by ID
+    }
 
 
 
