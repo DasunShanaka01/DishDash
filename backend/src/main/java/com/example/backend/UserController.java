@@ -34,7 +34,7 @@ public class UserController {
 
 
     @GetMapping("/users/{id}") //Maps HTTP GET requests to specific methods.
-    public ResponseEntity <Optional<User>> getUser(@PathVariable ObjectId id) {
+    public ResponseEntity <Optional<User>>getUser(@PathVariable ObjectId id) {
         return new ResponseEntity<Optional<User>>(userService.findById(id),HttpStatus.OK);
     }
 
@@ -53,12 +53,12 @@ public class UserController {
 
     //Login
     @PostMapping("/login")
-
     //The login method is public and will handle the request. It takes a JSON payload (received as a map of key-value pairs) as input
     //Key: "phone"
     // Value: "0771234567" (the user's phone number used for login)
     // Key: "password"
     // Value: "securePass123" (the user's password)
+    
     public ResponseEntity<String> login(@RequestBody Map<String, String> payload) {
     // When multiple requests are being processed concurrently, logs can become cluttered.
     //A unique requestId helps to correlate all log entries related to a specific request, making it easier to trace the flow of execution.
