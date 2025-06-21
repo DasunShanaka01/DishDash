@@ -63,26 +63,59 @@ public class UserController {
     // Key: "password"
     // Value: "securePass123" (the user's password)
     public ResponseEntity<String> login(@RequestBody Map<String, String> payload) {
-    // When multiple requests are being processed concurrently, logs can become cluttered.
-    //A unique requestId helps to correlate all log entries related to a specific request, making it easier to trace the flow of execution.
-    String requestId = UUID.randomUUID().toString();
-    
-    //Logs the request ID and the received payload to the console.
-    System.out.println("Request ID: " + requestId + ", Payload received: " + payload);
-    String phoneNumber = payload.get("phone");
-    String password = payload.get("password");
-    
-    //Logs the phone number and password received in the payload.
-    //This login method return true execute in if part and false in else part. 
-    if (userService.login(phoneNumber, password)) {
-        System.out.println("Request ID: " + requestId + ", Login successful for phone: " + phoneNumber);
-        return new ResponseEntity<>("Login successful", HttpStatus.OK);
-    } else {
-        System.out.println("Request ID: " + requestId + ", Invalid login attempt for phone: " + phoneNumber);
-        return new ResponseEntity<>("Invalid phone number or password", HttpStatus.UNAUTHORIZED);
+        // When multiple requests are being processed concurrently, logs can become cluttered.
+        //A unique requestId helps to correlate all log entries related to a specific request, making it easier to trace the flow of execution.
+        String requestId = UUID.randomUUID().toString();
+        
+        //Logs the request ID and the received payload to the console.
+        System.out.println("Request ID: " + requestId + ", Payload received: " + payload);
+        String phoneNumber = payload.get("phone");
+        String password = payload.get("password");
+        
+        //Logs the phone number and password received in the payload.
+        //This login method return true execute in if part and false in else part. 
+        if (userService.login(phoneNumber, password)) {
+            System.out.println("Request ID: " + requestId + ", Login successful for phone: " + phoneNumber);
+            return new ResponseEntity<>("Login successful", HttpStatus.OK);
+        } else {
+            System.out.println("Request ID: " + requestId + ", Invalid login attempt for phone: " + phoneNumber);
+            return new ResponseEntity<>("Invalid phone number or password", HttpStatus.UNAUTHORIZED);
+        }
     }
-}
 
+    @PutMapping("/users/{id}")
+    public ResponseEntity<String> updateUser(@PathVariable ObjectId id, @RequestBody Map<String, String> payload) {
+        Optional<User> existingUser = userService.findById(id);
+
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+            user.setFirstName(payload.get("firstName"));
+            user.setLastName(payload.get("lastName"));
+            user.setPhone(payload.get("phone"));
+            user.setPassword(payload.get("password"));
+
+            userService.updateUser(user); // Update user in the database
+            return new ResponseEntity<>("User updated successfully", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable ObjectId id) {
+        Optional<User> existingUser = userService.findById(id);
+
+        if (existingUser.isPresent()) {
+            userService.deleteUser(id); // Delete user from the database
+            return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    //Optional -> It was introduced to handle situations where you might deal with null values, but without directly using null.
+                  //It is used to represent the possible presence or absence of a value. Instead of using null to indicate that a variable does not have a value
 
 }   
 

@@ -39,9 +39,6 @@ public class User {
         return id != null ? id.toHexString() : null;
     }
 
-    //The @Data annotation in your class generates the 
-    //setFirstName, setLastName, setPhone, and setPassword 
-    //methods automatically.
 
 
     //The @Data annotation in your class generates the 
