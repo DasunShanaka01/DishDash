@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.servlet.http.HttpSession;
 
 @RestController // Indicates that this class is a RESTful controller.
 // It combines @Controller and @ResponseBody, meaning that methods in this class will return JSON responses directly.
@@ -59,7 +60,7 @@ public class UserController {
     // Value: "0771234567" (the user's phone number used for login)
     // Key: "password"
     // Value: "securePass123" (the user's password)
-    public ResponseEntity<String> login(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<String> login(@RequestBody Map<String, String> payload, HttpSession session) {
     // When multiple requests are being processed concurrently, logs can become cluttered.
     //A unique requestId helps to correlate all log entries related to a specific request, making it easier to trace the flow of execution.
     String requestId = UUID.randomUUID().toString();
@@ -73,12 +74,49 @@ public class UserController {
     //This login method return true execute in if part and false in else part. 
     if (userService.login(phoneNumber, password)) {
         System.out.println("Request ID: " + requestId + ", Login successful for phone: " + phoneNumber);
+        session.setAttribute("phone", phoneNumber); // Store phone number in session
         return new ResponseEntity<>("Login successful", HttpStatus.OK);
     } else {
         System.out.println("Request ID: " + requestId + ", Invalid login attempt for phone: " + phoneNumber);
         return new ResponseEntity<>("Invalid phone number or password", HttpStatus.UNAUTHORIZED);
     }
+
+    }
+
+    @GetMapping("/check-session")
+    public ResponseEntity<String> checkSession(HttpSession session) {
+    String phoneNumber = (String) session.getAttribute("phone");
+    
+    if (phoneNumber != null) {
+        // Log active session
+        System.out.println("Active session for phone: " + phoneNumber);
+        
+        // Return active session response
+        return new ResponseEntity<>("Session active for phone: " + phoneNumber, HttpStatus.OK);
+    } else {
+        // Log no active session
+        System.out.println("No active session found.");
+        
+        // Return unauthorized response
+        return new ResponseEntity<>("No active session", HttpStatus.UNAUTHORIZED);
+    }
+
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpSession session) {
+    // Invalidate the current session
+    session.invalidate();
+    
+    // Log session invalidation
+    System.out.println("User logged out successfully.");
+    
+    // Return success response
+    return new ResponseEntity<>("Logged out successfully", HttpStatus.OK);
 }
+
+
+
 
 
 }   
