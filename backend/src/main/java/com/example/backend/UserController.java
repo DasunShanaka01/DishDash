@@ -35,6 +35,7 @@ public class UserController {
         return new ResponseEntity<List<User>>(userService.getAllUsers(),HttpStatus.OK);
     }
 
+    // Optional -> It was introduced to handle situations where you might deal with null values, but without directly using null.
 
     @GetMapping("/users/{id}") //Maps HTTP GET requests to specific methods.
     public ResponseEntity <Optional<User>> getUser(@PathVariable ObjectId id) {
@@ -74,6 +75,8 @@ public class UserController {
 
         Optional<User> user = userService.findByPhone(phoneNumber);
 
+        // isPresent() ->Same as the  isEmpty() ,Checks if the Optional contains a value (i.e., if a user with the given phone number exists).
+        // If the user exists, it retrieves the user object; otherwise, it returns an empty Optional.
         //Logs the phone number and password received in the payload.
         //This login method return true execute in if part and false in else part. 
         if (user.isPresent() && userService.verifyPassword(user.get(), password)) {

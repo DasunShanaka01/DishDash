@@ -39,5 +39,19 @@ public class User {
         return id != null ? id.toHexString() : null;
     }
 
+
+    //The @Data annotation in your class generates the 
+    //setFirstName, setLastName, setPhone, and setPassword methods automatically. 
+    //That's why you're able to call these setter functions even though you don't
+    // explicitly see them in your code.
+
+
+
+
+
+
+
+
+
     
 }
