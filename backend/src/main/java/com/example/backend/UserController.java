@@ -10,12 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.servlet.http.HttpSession;
 
 @RestController // Indicates that this class is a RESTful controller.
 // It combines @Controller and @ResponseBody, meaning that methods in this class will return JSON responses directly.
@@ -32,6 +35,7 @@ public class UserController {
         return new ResponseEntity<List<User>>(userService.getAllUsers(),HttpStatus.OK);
     }
 
+    // Optional -> It was introduced to handle situations where you might deal with null values, but without directly using null.
 
     @GetMapping("/users/{id}") //Maps HTTP GET requests to specific methods.
     public ResponseEntity <Optional<User>>getUser(@PathVariable ObjectId id) {
@@ -58,7 +62,6 @@ public class UserController {
     // Value: "0771234567" (the user's phone number used for login)
     // Key: "password"
     // Value: "securePass123" (the user's password)
-    
     public ResponseEntity<String> login(@RequestBody Map<String, String> payload) {
     // When multiple requests are being processed concurrently, logs can become cluttered.
     //A unique requestId helps to correlate all log entries related to a specific request, making it easier to trace the flow of execution.
