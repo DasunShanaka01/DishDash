@@ -21,7 +21,7 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    // Method to register a new user
+    // Method to register a new user - Inserts a new user into the database.
     public User registerUser(String firstName, String lastName, String phone, String password) {
         User user = new User(firstName, lastName, phone, password);
         userRepository.insert(user); // Insert into the database
