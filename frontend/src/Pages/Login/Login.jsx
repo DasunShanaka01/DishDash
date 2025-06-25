@@ -23,7 +23,7 @@ const Login = () => {
       const response = await axios.post('http://localhost:8080/api/v1/login', { phone, password });
       console.log('Login successful:', response.data);
       alert('Login successful!');
-      navigate('/dashboard'); // Redirect to a dashboard or home page
+      navigate('/home'); // Redirect to a dashboard or home page
     } catch (error) {
       console.error('Login failed:', error);
       alert('Invalid phone number or password. Please try again.');

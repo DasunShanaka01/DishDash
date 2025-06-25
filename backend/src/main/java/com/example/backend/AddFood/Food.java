@@ -21,12 +21,14 @@ public class Food {
     private String name; // Name of the food item
     private String description; // Description of the food item
     private double price; // Price of the food item
+    private String category; // Category of the food item (e.g., appetizer, main course, dessert)
     private String imageUrl; // URL of the food item's image
 
-    public Food(String name, String description, double price, String imageUrl) {
+    public Food(String name, String description, double price,String ca ,String imageUrl) {
         this.name = name;
         this.description = description;
         this.price = price;
+        this.category = ca; 
         this.imageUrl = imageUrl;
     }
 
