@@ -34,12 +34,12 @@ const DishDashHomepage = () => {
   ];
 
   const cuisineTypes = [
-    { name: "Pizza", icon: "🍕", color: "#FF7D29" },
-    { name: "Burgers", icon: "🍔", color: "#7B4019" },
-    { name: "Sushi", icon: "🍣", color: "#D1D8BE" },
-    { name: "Desserts", icon: "🍰", color: "#FFBF78" },
-    { name: "Salads", icon: "🥗", color: "#D1D8BE" },
-    { name: "Tacos", icon: "🌮", color: "#FF7D29" }
+    { name: "Pizza", icon: "🍕", color: "#FF7D29",link: '/pizza' },
+    { name: "Burgers", icon: "🍔", color: "#7B4019", link: '/burgers' },
+    { name: "Sushi", icon: "🍣", color: "#D1D8BE", link: '/sushi' },
+    { name: "Desserts", icon: "🍰", color: "#FFBF78", link: '/desserts' },
+    { name: "Salads", icon: "🥗", color: "#D1D8BE", link: '/salads' },
+    { name: "Tacos", icon: "🌮", color: "#FF7D29", link: '/tacos' }
   ];
 
   useEffect(() => {
@@ -144,16 +144,20 @@ const DishDashHomepage = () => {
       {/* Cuisine Categories */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-3xl font-bold text-center mb-12" style={{ color: '#7B4019' }}>
+          <h3
+            className="text-3xl font-bold text-center mb-12"
+            style={{ color: '#7B4019' }}
+          >
             What are you craving?
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             {cuisineTypes.map((cuisine, index) => (
-              <div
+              <a
                 key={index}
+                href={cuisine.link} // Replace with the desired link
                 className="group cursor-pointer transform transition-all duration-300 hover:scale-110"
               >
-                <div 
+                <div
                   className="w-20 h-20 mx-auto rounded-full flex items-center justify-center text-3xl mb-3 shadow-lg group-hover:shadow-xl transition-shadow"
                   style={{ backgroundColor: cuisine.color }}
                 >
@@ -162,11 +166,12 @@ const DishDashHomepage = () => {
                 <p className="text-center font-medium text-gray-700 group-hover:text-gray-900">
                   {cuisine.name}
                 </p>
-              </div>
+              </a>
             ))}
           </div>
         </div>
       </section>
+
 
       {/* Featured Restaurants */}
       <section className="py-16" style={{ backgroundColor: '#D1D8BE' }}>
