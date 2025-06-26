@@ -92,7 +92,7 @@ const FoodDisplay = () => {
             </div>
             <div className="p-4">
               <h2 className="text-xl font-semibold text-gray-800 mb-2">{food.name}</h2>
-              <p className="text-gray-600 text-sm line-clamp-3">{food.description}</p>
+              <p className="text-gray-600 text-sm line-clamp-3">{food.category}</p>
               <button
                 className="mt-4 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-200 animate-fade-in"
                 onClick={() => alert(`Added ${food.name} to cart!`)}
