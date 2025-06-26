@@ -5,7 +5,7 @@ import Login from "./Pages/Login/Login.jsx";
 import HomePage from "./Pages/Home/HomePage.jsx";
 import AddFood from "./Pages/Add Food/AddFood.jsx";
 import FoodDisplay from "./Pages/FoodDisplay/FoodDisplay.jsx";
-
+import Pizza from "./Pages/Category Pages/Pizza.jsx";
 function App() {
   
 
@@ -17,6 +17,7 @@ function App() {
       <Route path="/home" element={<HomePage />} />
       <Route path="/add-food"element={<AddFood/>} />
       <Route path="/food-display" element={<FoodDisplay />} />
+      <Route path="/pizza" element={<Pizza />} />
       <Route path="/contact" element={<h1>Contact Page</h1>} />
       <Route path="*" element={<h1>404 Not Found</h1>} />
     </Routes>

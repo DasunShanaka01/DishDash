@@ -125,4 +125,14 @@ public class FoodController {
         return new ResponseEntity<>("Food not found", HttpStatus.NOT_FOUND);
     }
 
+    // Find by category
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<Food>> findByCategory(@PathVariable String category) {
+        List<Food> foods = foodService.findByCategory(category);
+        if (foods.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(foods, HttpStatus.OK);
+    }
+
 }

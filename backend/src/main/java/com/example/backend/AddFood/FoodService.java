@@ -38,4 +38,9 @@ public class FoodService {
     public void deleteFood(ObjectId id) {
         foodRepository.deleteById(id);
     }
+
+    //Find by category
+    public List<Food> findByCategory(String category) {
+        return foodRepository.findByCategory(category);
+    }
 }

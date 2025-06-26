@@ -85,7 +85,7 @@ const DishDashHomepage = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden h-96 md:h-[500px]">
+      <section className="relative overflow-hidden h-96 md:h-[500px] b">
         <div 
           className="absolute inset-0 transition-all duration-1000 ease-in-out"
           style={{ background: heroSlides[currentSlide].bg }}
