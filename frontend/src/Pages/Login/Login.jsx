@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // Remove useAuth from here
+import { useAuth } from '../AuthContext.jsx'; // Adjust path based on your project structure
 import './Login.css';
 
 const Login = () => {
   const [formData, setFormData] = useState({ phone: '', password: '' });
   const navigate = useNavigate();
+  const { checkSession } = useAuth(); // Use the custom hook
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,17 +21,19 @@ const Login = () => {
     e.preventDefault();
     const { phone, password } = formData;
 
-    if(phone == '1010' || password == '1010') {
-
-      navigate('/add-food'); 
+    if (phone === '1010' || password === '1010') {
+      navigate('/add-food');
       return;
     }
 
     try {
-      const response = await axios.post('http://localhost:8080/api/v1/login', { phone, password });
+      const response = await axios.post('http://localhost:8080/api/v1/login', { phone, password }, {
+        withCredentials: true,
+      });
       console.log('Login successful:', response.data);
       alert('Login successful!');
-      navigate('/home'); // Redirect to a dashboard or home page
+      await checkSession(); // Update authentication state
+      navigate('/home'); // Redirect to home
     } catch (error) {
       console.error('Login failed:', error);
       alert('Invalid phone number or password. Please try again.');

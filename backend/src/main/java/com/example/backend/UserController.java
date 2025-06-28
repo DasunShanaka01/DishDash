@@ -79,6 +79,7 @@ public class UserController {
         if (user.isPresent() && userService.verifyPassword(user.get(), password)) {
             System.out.println("Request ID: " + requestId + ", Login successful for phone: " + phoneNumber);
             session.setAttribute("userId", user.get().getId().toHexString()); // Store user ID in session
+            System.out.println("Session userId set: " + session.getAttribute("userId"));
             return new ResponseEntity<>("Login successful", HttpStatus.OK);
         } else {
             System.out.println("Request ID: " + requestId + ", Invalid login attempt for phone: " + phoneNumber);
@@ -122,15 +123,14 @@ public class UserController {
 
     @GetMapping("/check-session")
     public ResponseEntity<String> checkSession(HttpSession session) {
-        String userId = (String) session.getAttribute("userId");
-
-        if (userId != null) {
-            System.out.println("Active session for user ID: " + userId);
-            return new ResponseEntity<>("Session active for user ID: " + userId, HttpStatus.OK);
-        } else {
-            System.out.println("No active session found.");
-            return new ResponseEntity<>("No active session", HttpStatus.UNAUTHORIZED);
-        }
+    String userId = (String) session.getAttribute("userId");
+    if (userId != null) {
+        System.out.println("Active session for user ID: " + userId);
+        return new ResponseEntity<>("Session active for user ID: " + userId, HttpStatus.OK);
+    } else {
+        System.out.println("No active session found.");
+        return new ResponseEntity<>("No active session", HttpStatus.UNAUTHORIZED);
+    }
     }
 
     @PostMapping("/logout")
