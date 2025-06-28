@@ -7,7 +7,7 @@ const Pizza = () => {
   const [pizzaMenu, setPizzaMenu] = useState([]);
   const [sortBy, setSortBy] = useState('');
 
-  // Fetch pizza data on component mount
+  // Fetch pizza data on component amount
   useEffect(() => {
     const fetchPizza = async () => {
       try {
