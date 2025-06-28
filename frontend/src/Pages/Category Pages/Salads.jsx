@@ -217,7 +217,7 @@ const Salads = () => {
                 <div className="text-center py-12">
                   <div className="text-6xl mb-4">🔍</div>
                   <h3 className="text-2xl font-bold text-gray-600 mb-2">
-                    No pizzas found
+                    No salads found
                   </h3>
                   <p className="text-gray-500">Try adjusting your search or filters</p>
                 </div>
