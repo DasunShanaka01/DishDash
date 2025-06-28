@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service //Marks a class as a service that contains business logic.
 public class UserService {
 
-    @Autowired // Automatically injects the UserRepository dependency.
+    @Autowired // Automatically injects the UserRepository dependency
     private UserRepository userRepository;
 
     public List<User> getAllUsers() {

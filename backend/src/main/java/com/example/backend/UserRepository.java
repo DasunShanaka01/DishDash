@@ -11,6 +11,6 @@ public interface UserRepository extends  MongoRepository<User, ObjectId> {
 
     Optional<User> findByPhone(String phoneNumber);
     // This interface extends MongoRepository to provide CRUD operations for User entities.
-    // No additional methods are needed as the basic CRUD operations are already provided by MongoRepository.
+    
     
 }
