@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Plus, Minus, ShoppingCart, Star, Clock, MapPin, Filter, Search } from 'lucide-react';
- 
+import Header from '../Components/Header';
 
 const Burgers = () => {
 
@@ -94,44 +94,7 @@ const Burgers = () => {
 
   return (
 
-    <div className="min-h-screen bg-gray-50">
-          {/* Header */}
-          <header className="bg-white shadow-lg sticky top-0 z-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex justify-between items-center py-4">
-                <div className="flex items-center space-x-4">
-                  <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                    <a href="/home"><ArrowLeft className="w-6 h-6" style={{ color: '#7B4019' }} /></a>
-                  </button>
-                  <div className="flex items-center space-x-2">
-                    <div
-                      className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-xl"
-                      style={{
-                        background: 'linear-gradient(135deg, #7B4019 0%, #FF7D29 100%)',
-                      }}
-                    >
-                      DD
-                    </div>
-                    <h1 className="text-2xl font-bold" style={{ color: '#7B4019' }}>
-                      Dish Dash
-                    </h1>
-                  </div>
-                </div>
-                <div className="relative">
-                  <button
-                    className="flex items-center space-x-2 px-4 py-2 rounded-full text-white font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg"
-                    style={{
-                      background: 'linear-gradient(135deg, #FF7D29 0%, #FFBF78 100%)',
-                    }}
-                  >
-                    <ShoppingCart className="w-5 h-5" />
-                    <span>Cart ({getTotalItems()})</span>
-                    <span className="ml-2">${getTotalPrice().toFixed(2)}</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </header>
+    <div className="min-h-screen bg-gray-50"> 
     
           {/* Hero Section */}
           <section className="relative py-16" style={{ background: 'linear-gradient(135deg, #7B4019 0%, #FF7D29 100%)' }}>

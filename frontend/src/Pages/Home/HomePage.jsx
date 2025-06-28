@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, MapPin, Clock, Star, ChefHat, Truck, Shield, Heart } from 'lucide-react';
-import Header from '../Components/Header'; // Assuming you have a Header component
+import Header from '../Components/Header'; 
+import Footer from '../Components/Footer';
 
 
 const DishDashHomepage = () => {
@@ -54,8 +55,6 @@ const DishDashHomepage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       
-      {/* Header */}
-      <Header/>
 
       {/* Hero Section */}
       <section className="relative overflow-hidden h-96 md:h-[325px] b">
@@ -209,56 +208,7 @@ const DishDashHomepage = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="" style={{ backgroundColor: '#7B4019' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <div 
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold"
-                  style={{ backgroundColor: '#FF7D29' }}
-                >
-                  DD
-                </div>
-                <h5 className="text-xl font-bold text-white">Dish Dash</h5>
-              </div>
-              <p className="text-gray-300">Delivering happiness, one meal at a time.</p>
-            </div>
-            
-            <div>
-              <h6 className="text-white font-semibold mb-4">Company</h6>
-              <ul className="space-y-2 text-gray-300">
-                <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Press</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h6 className="text-white font-semibold mb-4">Support</h6>
-              <ul className="space-y-2 text-gray-300">
-                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h6 className="text-white font-semibold mb-4">Connect</h6>
-              <ul className="space-y-2 text-gray-300">
-                <li><a href="#" className="hover:text-white transition-colors">Facebook</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Twitter</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Instagram</a></li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="border-t border-gray-600 mt-8 pt-8 text-center text-gray-300">
-            <p>&copy; 2025 Dish Dash. All rights reserved. Made with <Heart className="w-4 h-4 inline text-red-400" /> for food lovers.</p>
-          </div>
-        </div>
-      </footer>
+      
     </div>
   );
 };

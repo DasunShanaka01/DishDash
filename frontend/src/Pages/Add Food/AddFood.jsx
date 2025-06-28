@@ -63,7 +63,7 @@ const AddFood = () => {
   };
 
   // Predefined categories (can be modified or fetched from backend)
-  const categories = ['Pizzas', 'Burgers', 'Desserts', 'Drinks', 'Snacks'];
+  const categories = ['Pizzas', 'Burgers', 'Sushi', 'Desserts', 'Salads','Tacos'];
 
   return (
     <div className="max-w-md mx-auto mt-10 p-5 bg-white shadow-md rounded-md">
