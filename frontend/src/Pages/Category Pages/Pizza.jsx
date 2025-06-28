@@ -11,7 +11,7 @@ const Pizza = () => {
   useEffect(() => {
     const fetchPizza = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/food/category/Pizza', {
+        const response = await fetch('http://localhost:8080/api/food/category/Pizzas', {
           headers: { 'Content-Type': 'application/json' },
         
         });
