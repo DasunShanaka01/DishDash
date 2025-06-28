@@ -1,5 +1,5 @@
 import React from 'react'; // Correct as is
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import './index.css';
 import Register from "./Pages/Register/Register.jsx";
 import Login from "./Pages/Login/Login.jsx";
@@ -15,12 +15,19 @@ import Desserts from "./Pages/Category Pages/Desserts.jsx";
 import Salads from "./Pages/Category Pages/Salads.jsx";
 import Tacos from "./Pages/Category Pages/Tacos.jsx";
 import { AuthProvider } from './Pages/AuthContext.jsx';
+import AdminPanel from './Pages/Admin/AdminPanel.jsx';
 
 function App() {
+  const location = useLocation(); // Get the current route
+
+  // Define the paths where the Header should not appear
+  const hideHeaderRoutes = ["/add-food","/admin"];
+
   return (
     <AuthProvider>
       <div className="min-h-screen flex flex-col">
-        <Header />
+        {/* Render Header only if the current path is not in hideHeaderRoutes */}
+        {!hideHeaderRoutes.includes(location.pathname) && <Header />}
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Register />} />
@@ -34,6 +41,7 @@ function App() {
             <Route path="/desserts" element={<Desserts />} />
             <Route path="/salads" element={<Salads />} />
             <Route path="/tacos" element={<Tacos />} />
+            <Route path="/admin" element={<AdminPanel />} />
             <Route path="/about" element={<h1>About Page</h1>} />
             <Route path="/contact" element={<h1>Contact Page</h1>} />
             <Route path="*" element={<h1>404 Not Found</h1>} />
