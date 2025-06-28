@@ -13,6 +13,7 @@ const Pizza = () => {
       try {
         const response = await fetch('http://localhost:8080/api/food/category/Pizza', {
           headers: { 'Content-Type': 'application/json' },
+        
         });
 
         if (!response.ok) {
@@ -20,6 +21,8 @@ const Pizza = () => {
         }
 
         const data = await response.json();
+        //get the pizza data from the response
+        console.log('Pizza data fetched:', data);
         setPizzaMenu(data);
       } catch (error) {
         console.error('Error fetching pizza data:', error);

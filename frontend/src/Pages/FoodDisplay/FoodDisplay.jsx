@@ -14,6 +14,7 @@ const FoodDisplay = () => {
         });
         if (response.status === 200) {
           setFoods(response.data);
+          console.log('Fetched foods:', response.data); // Debug log
         } else {
           throw new Error(`Unexpected status: ${response.status}`);
         }
@@ -76,10 +77,15 @@ const FoodDisplay = () => {
                   alt={food.name}
                   className="w-full h-full object-cover"
                   onError={(e) => {
-                    console.error(`Image failed to load for ${food.name}:`, e.target.src, e);
-                    e.target.src = '/placeholder.jpg'; // Local fallback
+                    console.error(`Image failed to load for ${food.name}:`, {
+                      initialSrc: e.target.src,
+                      foodImageUrl: food.imageUrl,
+                      error: e,
+                    });
+                    e.target.src = 'http://localhost:8080/uploads/placeholder.jpg';
+                    e.target.onerror = null; // Prevent infinite loop
                   }}
-                  onLoad={() => console.log(`Image loaded for ${food.name}:`, `http://localhost:8080${food.imageUrl}`)}
+                  onLoad={() => console.log(`Image loaded for ${food.name}:`, e.target.src)}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gray-200">
