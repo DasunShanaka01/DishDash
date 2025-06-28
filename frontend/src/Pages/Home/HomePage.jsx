@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, MapPin, Clock, Star, ChefHat, Truck, Shield, Heart } from 'lucide-react';
+import Header from '../Components/Header'; // Assuming you have a Header component
+
 
 const DishDashHomepage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -51,41 +53,12 @@ const DishDashHomepage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      
       {/* Header */}
-      <header className="bg-white shadow-lg sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-2">
-              <div 
-                className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-xl"
-                style={{ background: 'linear-gradient(135deg, #7B4019 0%, #FF7D29 100%)' }}
-              >
-                DD
-              </div>
-              <h1 className="text-2xl font-bold" style={{ color: '#7B4019' }}>Dish Dash</h1>
-            </div>
-            
-            <div className="hidden md:flex items-center space-x-2 text-gray-600">
-              <MapPin className="w-5 h-5" />
-              <span>Deliver to: </span>
-              <span className="font-semibold" style={{ color: '#7B4019' }}>Your Location</span>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <button className="text-gray-600 hover:text-gray-800 transition-colors">Sign In</button>
-              <button 
-                className="px-6 py-2 rounded-full text-white font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg"
-                style={{ background: 'linear-gradient(135deg, #FF7D29 0%, #FFBF78 100%)' }}
-              >
-                Sign Up
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header/>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden h-96 md:h-[500px] b">
+      <section className="relative overflow-hidden h-96 md:h-[325px] b">
         <div 
           className="absolute inset-0 transition-all duration-1000 ease-in-out"
           style={{ background: heroSlides[currentSlide].bg }}
@@ -104,26 +77,6 @@ const DishDashHomepage = () => {
             <p className="text-xl md:text-2xl text-white mb-8 opacity-90">
               {heroSlides[currentSlide].subtitle}
             </p>
-            
-            {/* Search Bar */}
-            <div className="max-w-2xl mx-auto">
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6" />
-                <input
-                  type="text"
-                  placeholder="Search for restaurants, cuisines, or dishes..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 text-lg rounded-full border-none focus:ring-4 focus:ring-orange-300 focus:outline-none shadow-2xl text-white"
-                />
-                <button 
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 rounded-full text-white font-medium transition-all duration-300 hover:scale-105"
-                  style={{ background: 'linear-gradient(135deg, #7B4019 0%, #FF7D29 100%)' }}
-                >
-                  Search
-                </button>
-              </div>
-            </div>
           </div>
         </div>
         

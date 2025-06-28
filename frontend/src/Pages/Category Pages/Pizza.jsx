@@ -166,12 +166,9 @@ const Pizza = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-orange-300 focus:border-orange-300 focus:outline-none"
               />
-            </div>
+        </div>
         
       </section>
-
-      
-
 
       {/* Pizza Menu */}
       <section className="py-12">
