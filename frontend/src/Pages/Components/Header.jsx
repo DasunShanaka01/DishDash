@@ -101,10 +101,10 @@ const Header = ({ cartItems = 0, cartTotal = 0 }) => {
                     Favorites
                   </a>
                   <hr className="my-2" />
-                  <a href="/signin" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors">
+                  <a href="/Login" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors">
                     Sign In
                   </a>
-                  <a href="/signup" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors">
+                  <a href="/" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors">
                     Sign Up
                   </a>
                 </div>
@@ -142,24 +142,6 @@ const Header = ({ cartItems = 0, cartTotal = 0 }) => {
                 <MapPin className="w-5 h-5" />
                 <span>Deliver to: </span>
                 <span className="font-semibold" style={{ color: '#7B4019' }}>Your Location</span>
-              </div>
-
-              {/* Mobile Navigation Links */}
-              <div className="space-y-1">
-                {navLinks.map((link) => (
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
-                  >
-                    {typeof link.icon === 'string' ? (
-                      <span className="text-xl">{link.icon}</span>
-                    ) : (
-                      <link.icon className="w-5 h-5" />
-                    )}
-                    <span className="font-medium">{link.name}</span>
-                  </a>
-                ))}
               </div>
             </div>
           </div>
