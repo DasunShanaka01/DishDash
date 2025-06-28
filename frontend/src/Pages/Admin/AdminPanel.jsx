@@ -1,130 +1,436 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from 'react';
+import { Plus, Edit, Eye, Package, MapPin, Clock, CheckCircle, XCircle, ChefHat, Truck } from 'lucide-react';
 
-const AdminPanel = () => {
-  const [foods, setFoods] = useState([]);
-  const [newFood, setNewFood] = useState({ name: "", price: "", category: "", imageUrl: "" });
-  const [deliveryLocations, setDeliveryLocations] = useState([]);
-  const [deliveryStatus, setDeliveryStatus] = useState({});
+const DishDashAdmin = () => {
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [orders, setOrders] = useState([
+    { id: 1, customer: 'John Doe', items: 'Margherita Pizza, Garlic Bread', total: 24.99, status: 'preparing', location: 'Downtown', time: '2024-01-15 14:30' },
+    { id: 2, customer: 'Jane Smith', items: 'Pepperoni Pizza, Coke', total: 18.50, status: 'cooking', location: 'Suburbs', time: '2024-01-15 14:45' },
+    { id: 3, customer: 'Mike Johnson', items: 'Hawaiian Pizza', total: 22.00, status: 'delivery', location: 'City Center', time: '2024-01-15 15:00' },
+    { id: 4, customer: 'Sarah Wilson', items: 'Veggie Supreme', total: 26.75, status: 'pending', location: 'East Side', time: '2024-01-15 15:15' }
+  ]);
 
-  // Fetch food items and delivery locations
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const foodResponse = await axios.get("http://localhost:8080/api/food/foods");
-        const locationResponse = await axios.get("http://localhost:8080/api/delivery/locations");
-        setFoods(foodResponse.data);
-        setDeliveryLocations(locationResponse.data);
-      } catch (err) {
-        console.error("Error fetching data:", err);
-      }
-    };
-    fetchData();
-  }, []);
+  const [foods, setFoods] = useState([
+    { id: 1, name: 'Margherita Pizza', price: 15.99, category: 'Pizza', image: '/api/placeholder/150/150', available: true },
+    { id: 2, name: 'Pepperoni Pizza', price: 17.99, category: 'Pizza', image: '/api/placeholder/150/150', available: true },
+    { id: 3, name: 'Garlic Bread', price: 6.99, category: 'Sides', image: '/api/placeholder/150/150', available: false }
+  ]);
 
-  // Add new food item
-  const addFood = async () => {
-    try {
-      const response = await axios.post("http://localhost:8080/api/food/add", newFood);
-      setFoods([...foods, response.data]);
-      setNewFood({ name: "", price: "", category: "", imageUrl: "" });
-      alert("Food added successfully!");
-    } catch (err) {
-      console.error("Error adding food:", err);
+  const [newFood, setNewFood] = useState({
+    name: '',
+    price: '',
+    category: '',
+    description: '',
+    image: ''
+  });
+
+  const [showAddFood, setShowAddFood] = useState(false);
+
+  const deliveryLocations = [
+    { area: 'Downtown', orders: 45, avgTime: '25 min' },
+    { area: 'Suburbs', orders: 32, avgTime: '35 min' },
+    { area: 'City Center', orders: 28, avgTime: '20 min' },
+    { area: 'East Side', orders: 19, avgTime: '40 min' }
+  ];
+
+  const statusColors = {
+    pending: 'bg-yellow-100 text-yellow-800',
+    preparing: 'bg-blue-100 text-blue-800',
+    cooking: 'bg-orange-100 text-orange-800',
+    delivery: 'bg-purple-100 text-purple-800',
+    completed: 'bg-green-100 text-green-800',
+    rejected: 'bg-red-100 text-red-800'
+  };
+
+  const statusIcons = {
+    pending: Clock,
+    preparing: Package,
+    cooking: ChefHat,
+    delivery: Truck,
+    completed: CheckCircle,
+    rejected: XCircle
+  };
+
+  const updateOrderStatus = (orderId, newStatus) => {
+    setOrders(orders.map(order => 
+      order.id === orderId ? { ...order, status: newStatus } : order
+    ));
+  };
+
+  const addNewFood = () => {
+    if (newFood.name && newFood.price && newFood.category) {
+      const food = {
+        id: foods.length + 1,
+        ...newFood,
+        price: parseFloat(newFood.price),
+        available: true,
+        image: '/api/placeholder/150/150'
+      };
+      setFoods([...foods, food]);
+      setNewFood({ name: '', price: '', category: '', description: '', image: '' });
+      setShowAddFood(false);
     }
   };
 
-  // Update delivery status
-  const updateStatus = async (foodId, status) => {
-    try {
-      await axios.put(`http://localhost:8080/api/delivery/status/${foodId}`, { status });
-      setDeliveryStatus((prev) => ({ ...prev, [foodId]: status }));
-      alert("Delivery status updated successfully!");
-    } catch (err) {
-      console.error("Error updating status:", err);
-    }
+  const toggleFoodAvailability = (foodId) => {
+    setFoods(foods.map(food => 
+      food.id === foodId ? { ...food, available: !food.available } : food
+    ));
   };
+
+  const renderDashboard = () => (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="p-6 rounded-lg shadow-md" style={{ backgroundColor: '#FFBF78' }}>
+          <h3 className="text-lg font-semibold text-gray-800">Total Orders</h3>
+          <p className="text-3xl font-bold mt-2" style={{ color: '#7B4019' }}>{orders.length}</p>
+        </div>
+        <div className="p-6 rounded-lg shadow-md" style={{ backgroundColor: '#D1D8BE' }}>
+          <h3 className="text-lg font-semibold text-gray-800">Active Orders</h3>
+          <p className="text-3xl font-bold mt-2" style={{ color: '#7B4019' }}>
+            {orders.filter(o => ['preparing', 'cooking', 'delivery'].includes(o.status)).length}
+          </p>
+        </div>
+        <div className="p-6 rounded-lg shadow-md" style={{ backgroundColor: '#FF7D29' }}>
+          <h3 className="text-lg font-semibold text-white">Menu Items</h3>
+          <p className="text-3xl font-bold mt-2 text-white">{foods.length}</p>
+        </div>
+        <div className="p-6 rounded-lg shadow-md" style={{ backgroundColor: '#7B4019' }}>
+          <h3 className="text-lg font-semibold text-white">Revenue Today</h3>
+          <p className="text-3xl font-bold mt-2 text-white">$284.50</p>
+        </div>
+      </div>
+
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <h3 className="text-xl font-semibold mb-4" style={{ color: '#7B4019' }}>Recent Orders</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b">
+                <th className="text-left p-3">Order ID</th>
+                <th className="text-left p-3">Customer</th>
+                <th className="text-left p-3">Items</th>
+                <th className="text-left p-3">Total</th>
+                <th className="text-left p-3">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orders.slice(0, 5).map(order => {
+                const StatusIcon = statusIcons[order.status];
+                return (
+                  <tr key={order.id} className="border-b hover:bg-gray-50">
+                    <td className="p-3">#{order.id}</td>
+                    <td className="p-3">{order.customer}</td>
+                    <td className="p-3">{order.items}</td>
+                    <td className="p-3">${order.total}</td>
+                    <td className="p-3">
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm ${statusColors[order.status]}`}>
+                        <StatusIcon className="w-4 h-4 mr-1" />
+                        {order.status}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderOrders = () => (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold" style={{ color: '#7B4019' }}>Order Management</h2>
+      </div>
+
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b">
+                <th className="text-left p-3">Order ID</th>
+                <th className="text-left p-3">Customer</th>
+                <th className="text-left p-3">Items</th>
+                <th className="text-left p-3">Total</th>
+                <th className="text-left p-3">Location</th>
+                <th className="text-left p-3">Time</th>
+                <th className="text-left p-3">Status</th>
+                <th className="text-left p-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orders.map(order => {
+                const StatusIcon = statusIcons[order.status];
+                return (
+                  <tr key={order.id} className="border-b hover:bg-gray-50">
+                    <td className="p-3">#{order.id}</td>
+                    <td className="p-3">{order.customer}</td>
+                    <td className="p-3">{order.items}</td>
+                    <td className="p-3">${order.total}</td>
+                    <td className="p-3">{order.location}</td>
+                    <td className="p-3">{order.time}</td>
+                    <td className="p-3">
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm ${statusColors[order.status]}`}>
+                        <StatusIcon className="w-4 h-4 mr-1" />
+                        {order.status}
+                      </span>
+                    </td>
+                    <td className="p-3">
+                      <select
+                        value={order.status}
+                        onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+                        className="px-3 py-1 border rounded-md text-sm"
+                        style={{ borderColor: '#FF7D29' }}
+                      >
+                        <option value="pending">Pending</option>
+                        <option value="preparing">Preparing</option>
+                        <option value="cooking">Cooking</option>
+                        <option value="delivery">Out for Delivery</option>
+                        <option value="completed">Completed</option>
+                        <option value="rejected">Rejected</option>
+                      </select>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderFoods = () => (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold" style={{ color: '#7B4019' }}>Food Management</h2>
+        <button
+          onClick={() => setShowAddFood(true)}
+          className="px-4 py-2 rounded-lg text-white flex items-center gap-2 hover:opacity-90 transition-opacity"
+          style={{ backgroundColor: '#FF7D29' }}
+        >
+          <Plus className="w-4 h-4" />
+          Add New Food
+        </button>
+      </div>
+
+      {showAddFood && (
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h3 className="text-xl font-semibold mb-4" style={{ color: '#7B4019' }}>Add New Food Item</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              type="text"
+              placeholder="Food Name"
+              value={newFood.name}
+              onChange={(e) => setNewFood({...newFood, name: e.target.value})}
+              className="p-3 border rounded-lg"
+              style={{ borderColor: '#D1D8BE' }}
+            />
+            <input
+              type="number"
+              placeholder="Price"
+              value={newFood.price}
+              onChange={(e) => setNewFood({...newFood, price: e.target.value})}
+              className="p-3 border rounded-lg"
+              style={{ borderColor: '#D1D8BE' }}
+            />
+            <select
+              value={newFood.category}
+              onChange={(e) => setNewFood({...newFood, category: e.target.value})}
+              className="p-3 border rounded-lg"
+              style={{ borderColor: '#D1D8BE' }}
+            >
+              <option value="">Select Category</option>
+              <option value="Pizza">Pizza</option>
+              <option value="Sides">Sides</option>
+              <option value="Drinks">Drinks</option>
+              <option value="Desserts">Desserts</option>
+            </select>
+            <input
+              type="text"
+              placeholder="Image URL"
+              value={newFood.image}
+              onChange={(e) => setNewFood({...newFood, image: e.target.value})}
+              className="p-3 border rounded-lg"
+              style={{ borderColor: '#D1D8BE' }}
+            />
+          </div>
+          <textarea
+            placeholder="Description"
+            value={newFood.description}
+            onChange={(e) => setNewFood({...newFood, description: e.target.value})}
+            className="w-full p-3 border rounded-lg mt-4"
+            style={{ borderColor: '#D1D8BE' }}
+            rows="3"
+          />
+          <div className="flex gap-3 mt-4">
+            <button
+              onClick={addNewFood}
+              className="px-6 py-2 rounded-lg text-white hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: '#FF7D29' }}
+            >
+              Add Food
+            </button>
+            <button
+              onClick={() => setShowAddFood(false)}
+              className="px-6 py-2 rounded-lg border text-gray-700 hover:bg-gray-50 transition-colors"
+              style={{ borderColor: '#D1D8BE' }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {foods.map(food => (
+          <div key={food.id} className="bg-white p-6 rounded-lg shadow-md">
+            <img
+              src={food.image}
+              alt={food.name}
+              className="w-full h-32 object-cover rounded-lg mb-4"
+            />
+            <h3 className="text-lg font-semibold mb-2" style={{ color: '#7B4019' }}>{food.name}</h3>
+            <p className="text-gray-600 mb-2">{food.category}</p>
+            <p className="text-xl font-bold mb-4" style={{ color: '#FF7D29' }}>${food.price}</p>
+            <div className="flex justify-between items-center">
+              <span className={`px-3 py-1 rounded-full text-sm ${food.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                {food.available ? 'Available' : 'Unavailable'}
+              </span>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => toggleFoodAvailability(food.id)}
+                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  style={{ color: '#FF7D29' }}
+                >
+                  <Eye className="w-4 h-4" />
+                </button>
+                <button
+                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  style={{ color: '#FF7D29' }}
+                >
+                  <Edit className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderLocations = () => (
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold" style={{ color: '#7B4019' }}>Delivery Locations</h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {deliveryLocations.map((location, index) => (
+          <div key={index} className="bg-white p-6 rounded-lg shadow-md">
+            <div className="flex items-center gap-3 mb-4">
+              <MapPin className="w-6 h-6" style={{ color: '#FF7D29' }} />
+              <h3 className="text-xl font-semibold" style={{ color: '#7B4019' }}>{location.area}</h3>
+            </div>
+            <div className="space-y-3">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Active Orders:</span>
+                <span className="font-semibold" style={{ color: '#FF7D29' }}>{location.orders}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Avg. Delivery Time:</span>
+                <span className="font-semibold" style={{ color: '#FF7D29' }}>{location.avgTime}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <h3 className="text-xl font-semibold mb-4" style={{ color: '#7B4019' }}>Add New Delivery Area</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input
+            type="text"
+            placeholder="Area Name"
+            className="p-3 border rounded-lg"
+            style={{ borderColor: '#D1D8BE' }}
+          />
+          <input
+            type="text"
+            placeholder="Estimated Delivery Time"
+            className="p-3 border rounded-lg"
+            style={{ borderColor: '#D1D8BE' }}
+          />
+        </div>
+        <button
+          className="mt-4 px-6 py-2 rounded-lg text-white flex items-center gap-2 hover:opacity-90 transition-opacity"
+          style={{ backgroundColor: '#FF7D29' }}
+        >
+          <Plus className="w-4 h-4" />
+          Add Area
+        </button>
+      </div>
+    </div>
+  );
+
+  const tabs = [
+    { id: 'dashboard', label: 'Dashboard', icon: Package },
+    { id: 'orders', label: 'Orders', icon: Clock },
+    { id: 'foods', label: 'Food Items', icon: ChefHat },
+    { id: 'locations', label: 'Locations', icon: MapPin }
+  ];
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Admin Panel</h1>
-
-      {/* Add New Food */}
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold">Add New Food</h2>
-        <div className="grid grid-cols-2 gap-4 mt-4">
-          <input
-            type="text"
-            placeholder="Name"
-            value={newFood.name}
-            onChange={(e) => setNewFood({ ...newFood, name: e.target.value })}
-            className="border p-2"
-          />
-          <input
-            type="number"
-            placeholder="Price"
-            value={newFood.price}
-            onChange={(e) => setNewFood({ ...newFood, price: e.target.value })}
-            className="border p-2"
-          />
-          <input
-            type="text"
-            placeholder="Category"
-            value={newFood.category}
-            onChange={(e) => setNewFood({ ...newFood, category: e.target.value })}
-            className="border p-2"
-          />
-          <input
-            type="text"
-            placeholder="Image URL"
-            value={newFood.imageUrl}
-            onChange={(e) => setNewFood({ ...newFood, imageUrl: e.target.value })}
-            className="border p-2"
-          />
-          <button
-            onClick={addFood}
-            className="col-span-2 bg-blue-500 text-white py-2 rounded"
-          >
-            Add Food
-          </button>
+    <div className="min-h-screen" style={{ backgroundColor: '#F5F5F5' }}>
+      {/* Header */}
+      <header className="shadow-md p-4" style={{ backgroundColor: '#7B4019' }}>
+        <div className="container mx-auto">
+          <h1 className="text-2xl font-bold text-white">Dish Dash Admin Panel</h1>
         </div>
-      </div>
+      </header>
 
-      {/* Update Delivery Status */}
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold">Update Delivery Status</h2>
-        <div className="grid grid-cols-1 gap-4 mt-4">
-          {foods.map((food) => (
-            <div key={food._id} className="border p-4 rounded">
-              <h3 className="font-bold">{food.name}</h3>
-              <select
-                value={deliveryStatus[food._id] || ""}
-                onChange={(e) => updateStatus(food._id, e.target.value)}
-                className="border p-2 mt-2"
-              >
-                <option value="">Select Status</option>
-                <option value="rejected">Rejected</option>
-                <option value="approved">Approved</option>
-                <option value="preparing">Preparing</option>
-                <option value="cooking">Cooking</option>
-                <option value="delivered">Delivered</option>
-              </select>
-            </div>
-          ))}
+      <div className="container mx-auto p-6">
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Sidebar */}
+          <aside className="w-full lg:w-64">
+            <nav className="bg-white rounded-lg shadow-md p-4">
+              <ul className="space-y-2">
+                {tabs.map(tab => {
+                  const Icon = tab.icon;
+                  return (
+                    <li key={tab.id}>
+                      <button
+                        onClick={() => setActiveTab(tab.id)}
+                        className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors ${
+                          activeTab === tab.id
+                            ? 'text-white'
+                            : 'text-gray-700 hover:bg-gray-100'
+                        }`}
+                        style={{
+                          backgroundColor: activeTab === tab.id ? '#FF7D29' : 'transparent'
+                        }}
+                      >
+                        <Icon className="w-5 h-5" />
+                        {tab.label}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+          </aside>
+
+          {/* Main Content */}
+          <main className="flex-1">
+            {activeTab === 'dashboard' && renderDashboard()}
+            {activeTab === 'orders' && renderOrders()}
+            {activeTab === 'foods' && renderFoods()}
+            {activeTab === 'locations' && renderLocations()}
+          </main>
         </div>
-      </div>
-
-      {/* View Delivery Locations */}
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold">Delivery Locations</h2>
-        <ul className="list-disc pl-6 mt-4">
-          {deliveryLocations.map((location, index) => (
-            <li key={index}>{location}</li>
-          ))}
-        </ul>
       </div>
     </div>
   );
 };
 
-export default AdminPanel;
+export default DishDashAdmin;
