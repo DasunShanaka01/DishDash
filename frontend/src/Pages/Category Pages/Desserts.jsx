@@ -1,110 +1,143 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Plus, Minus, ShoppingCart, Star, Clock, MapPin, Filter, Search } from 'lucide-react';
+import { useAuth } from '../AuthContext.jsx'; // Adjust path as needed
+import axios from 'axios'; // Added axios import
 
-const Desserts = () => {
+const Pizza = () => {
+  const [cart, setCart] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [pizzaMenu, setPizzaMenu] = useState([]);
+  const [sortBy, setSortBy] = useState('');
+  
+  const userId = useAuth();
+  console.log('Pizza User ID:', userId);
 
-    const [cart, setCart] = useState([]);
-      const [searchQuery, setSearchQuery] = useState('');
-      const [pizzaMenu, setPizzaMenu] = useState([]);
-      const [sortBy, setSortBy] = useState('');
-    
-      // Fetch pizza data on component mount
-      useEffect(() => {
-        const fetchPizza = async () => {
-          try {
-            const response = await fetch('http://localhost:8080/api/food/category/Desserts', {
-              headers: { 'Content-Type': 'application/json' },
-            });
-    
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
-            }
-    
-            const data = await response.json();
-            setPizzaMenu(data);
-          } catch (error) {
-            console.error('Error fetching pizza data:', error);
-          }
-        };
-    
-        fetchPizza();
-      }, []);
-    
-      const addToCart = (pizza) => {
+  // Fetch pizza data on component mount
+  useEffect(() => {
+    const fetchPizza = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/food/category/Desserts', {
+          headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        setPizzaMenu(data);
+      } catch (error) {
+        console.error('Error fetching pizza data:', error);
+      }
+    };
+
+    fetchPizza();
+  }, []);
+
+  // Add to cart with backend API integration
+  const addToCart = async (pizza) => {
+    try {
+      const payload = {
+        userId: userId.userId, // Extract the string userId
+        foodId: pizza.id,
+        quantity: '1', // Convert to string to match Map<String, String>
+      };
+
+      console.log('Adding to cart payload:', payload);
+
+      const response = await axios.post('http://localhost:8080/api/cart/add', payload, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      console.log('Cart API response:', response);
+
+      if (response.status === 201) {
+        // Update local cart state based on successful response
         const existingItem = cart.find((item) => item.id === pizza.id);
         if (existingItem) {
           setCart(
             cart.map((item) =>
-              item.id === pizza.id
-                ? { ...item, quantity: item.quantity + 1 }
-                : item
+              item.id === pizza.id ? { ...item, quantity: item.quantity + 1 } : item
             )
           );
         } else {
           setCart([...cart, { ...pizza, quantity: 1 }]);
         }
-      };
-    
-      const removeFromCart = (pizzaId) => {
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error.response?.data || error.message);
+    }
+  };
+
+  // Remove from cart with backend API integration
+  const removeFromCart = async (pizzaId) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/api/cart/remove/${pizzaId}`,
+        {},
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+
+      if (response.status === 204) {
+        // Update local cart state optimistically
         const existingItem = cart.find((item) => item.id === pizzaId);
         if (existingItem && existingItem.quantity > 1) {
           setCart(
             cart.map((item) =>
-              item.id === pizzaId
-                ? { ...item, quantity: item.quantity - 1 }
-                : item
+              item.id === pizzaId ? { ...item, quantity: item.quantity - 1 } : item
             )
           );
         } else {
           setCart(cart.filter((item) => item.id !== pizzaId));
         }
-      };
-    
-      const getCartItemQuantity = (pizzaId) => {
-        const item = cart.find((item) => item.id === pizzaId);
-        return item ? item.quantity : 0;
-      };
-    
-      const getTotalItems = () => {
-        return cart.reduce((total, item) => total + item.quantity, 0);
-      };
-    
-      const getTotalPrice = () => {
-        return cart.reduce((total, item) => total + item.price * item.quantity, 0);
-      };
-    
-      const filteredPizzas = pizzaMenu.filter((pizza) => {
-        const matchesSearch =
-          pizza.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          pizza.description.toLowerCase().includes(searchQuery.toLowerCase());
-        return matchesSearch;
-      });
-    
-      const sortedPizzas = [...filteredPizzas].sort((a, b) => {
-        switch (sortBy) {
-          case 'price-low':
-            return a.price - b.price;
-          case 'price-high':
-            return b.price - a.price;
-          default:
-            return 0;
-        }
-});
+      }
+    } catch (error) {
+      console.error('Error removing from cart:', error.response?.data || error.message);
+    }
+  };
 
+  const getCartItemQuantity = (pizzaId) => {
+    const item = cart.find((item) => item.id === pizzaId);
+    return item ? item.quantity : 0;
+  };
+
+  const getTotalItems = () => {
+    return cart.reduce((total, item) => total + item.quantity, 0);
+  };
+
+  const getTotalPrice = () => {
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  };
+
+  const filteredPizzas = pizzaMenu.filter((pizza) => {
+    const matchesSearch =
+      pizza.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      pizza.description.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesSearch;
+  });
+
+  const sortedPizzas = [...filteredPizzas].sort((a, b) => {
+    switch (sortBy) {
+      case 'price-low':
+        return a.price - b.price;
+      case 'price-high':
+        return b.price - a.price;
+      default:
+        return 0;
+    }
+  });
 
   return (
     <div className="min-h-screen bg-gray-50">
-  
-
       {/* Hero Section */}
       <section className="relative py-16" style={{ background: 'linear-gradient(135deg, #7B4019 0%, #FF7D29 100%)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="text-6xl mb-4">🍰</div>
+          <div className="text-6xl mb-4">🍕</div>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Indulgent treats crafted to satisfy your sweet tooth. 
+            Authentic Wood-Fired Pizzas
           </h2>
           <p className="text-xl text-white opacity-90 mb-8">
-            From rich chocolate delights to creamy, dreamy classics, every bite is pure bliss.
+            Hand-tossed dough, premium ingredients, baked to perfection
           </p>
           <div className="flex items-center justify-center space-x-6 text-white">
             <div className="flex items-center space-x-2">
@@ -124,16 +157,15 @@ const Desserts = () => {
 
         {/* Search */}
         <div className="relative max-w-2xl mx-auto mt-10">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6" />
-            <input
-                type="text"
-                placeholder="Search pizzas..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-orange-300 focus:border-orange-300 focus:outline-none"
-              />
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6" />
+          <input
+            type="text"
+            placeholder="Search pizzas..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-orange-300 focus:border-orange-300 focus:outline-none"
+          />
         </div>
-        
       </section>
 
       {/* Pizza Menu */}
@@ -226,4 +258,4 @@ const Desserts = () => {
   );
 };
 
-export default Desserts
+export default Pizza;
