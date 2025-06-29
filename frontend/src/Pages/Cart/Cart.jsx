@@ -265,7 +265,7 @@ const Cart = () => {
             <h2 className="text-2xl font-semibold text-gray-600 mb-2">Your cart is empty</h2>
             <p className="text-gray-500 mb-6">Add some delicious items to get started!</p>
             <button
-              onClick={() => navigate('/menu')}
+              onClick={() => navigate('/home')}
               className="px-6 py-3 rounded-lg text-white font-semibold hover:opacity-90 transition-opacity"
               style={{ backgroundColor: '#FF7D29' }}
             >
@@ -383,7 +383,7 @@ const Cart = () => {
                   </button>
                   
                   <button
-                    onClick={() => navigate('/menu')}
+                    onClick={() => navigate('/home')}
                     className="w-full py-3 rounded-lg border font-semibold hover:bg-gray-50 transition-colors"
                     style={{ borderColor: '#D1D8BE', color: '#7B4019' }}
                   >

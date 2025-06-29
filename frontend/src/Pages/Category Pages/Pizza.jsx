@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Plus, Minus, ShoppingCart, Star, Clock, MapPin, Filter, Search } from 'lucide-react';
-import { useAuth } from '../AuthContext.jsx';
-import axios from 'axios';
+import { useAuth } from '../AuthContext.jsx'; // Adjust path as needed
+import axios from 'axios'; // Added axios import
 
 const Pizza = () => {
-  const [cartItems, setCartItems] = useState([]);
+  const [cart, setCart] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [pizzaMenu, setPizzaMenu] = useState([]);
   const [sortBy, setSortBy] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   
   const userId = useAuth();
   console.log('Pizza User ID:', userId);
@@ -36,113 +34,81 @@ const Pizza = () => {
     fetchPizza();
   }, []);
 
-  // Fetch user's cart items
-  useEffect(() => {
-    if (userId?.userId) {
-      const fetchCartItems = async () => {
-        try {
-          setLoading(true);
-          const response = await axios.get(`http://localhost:8080/api/cart/${userId.userId}`);
-          setCartItems(response.data);
-        } catch (error) {
-          console.error('Error fetching cart items:', error);
-          setError('Failed to load cart items');
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchCartItems();
-    }
-  }, [userId]);
-
-  // Update quantity function (as you provided)
-  const updateQuantity = async (cartItemId, newQuantity) => {
-    if (newQuantity < 1) return;
-    
-    try {
-      const response = await axios.post(
-        `http://localhost:8080/api/cart/update/${cartItemId}`,
-        { quantity: newQuantity.toString() }
-      );
-      
-      setCartItems(cartItems.map(item => 
-        item.id === cartItemId ? { ...item, quantity: newQuantity } : item
-      ));
-    } catch (err) {
-      console.error('Update quantity error:', err);
-      setError('Failed to update quantity');
-    }
-  };
-
-  // Add to cart with proper quantity management
+  // Add to cart with backend API integration
   const addToCart = async (pizza) => {
     try {
-      // Check if item already exists in cart
-      const existingItem = cartItems.find(item => item.foodId === pizza.id);
-      
-      if (existingItem) {
-        // If exists, increment quantity
-        await updateQuantity(existingItem.id, existingItem.quantity + 1);
-      } else {
-        // If new item, add to cart
-        const payload = {
-          userId: userId.userId,
-          foodId: pizza.id,
-          quantity: '1'
-        };
+      const payload = {
+        userId: userId.userId, // Extract the string userId
+        foodId: pizza.id,
+        quantity: '1', // Convert to string to match Map<String, String>
+      };
 
-        const response = await axios.post('http://localhost:8080/api/cart/add', payload);
-        
-        if (response.status === 201) {
-          // Add the new item to local state with quantity 1
-          setCartItems([...cartItems, { ...response.data, food: pizza }]);
+      console.log('Adding to cart payload:', payload);
+
+      const response = await axios.post('http://localhost:8080/api/cart/add', payload, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      console.log('Cart API response:', response);
+
+      if (response.status === 201) {
+        // Update local cart state based on successful response
+        const existingItem = cart.find((item) => item.id === pizza.id);
+        if (existingItem) {
+          setCart(
+            cart.map((item) =>
+              item.id === pizza.id ? { ...item, quantity: item.quantity + 1 } : item
+            )
+          );
+        } else {
+          setCart([...cart, { ...pizza, quantity: 1 }]);
         }
       }
     } catch (error) {
-      console.error('Error adding to cart:', error);
-      setError('Failed to add item to cart');
+      console.error('Error adding to cart:', error.response?.data || error.message);
     }
   };
 
-  // Remove from cart with proper quantity management
+  // Remove from cart with backend API integration
   const removeFromCart = async (pizzaId) => {
     try {
-      const existingItem = cartItems.find(item => item.foodId === pizzaId);
-      
-      if (!existingItem) return;
-      
-      if (existingItem.quantity > 1) {
-        // If quantity > 1, decrement quantity
-        await updateQuantity(existingItem.id, existingItem.quantity - 1);
-      } else {
-        // If quantity is 1, remove item completely
-        await axios.post(`http://localhost:8080/api/cart/remove/${existingItem.id}`);
-        setCartItems(cartItems.filter(item => item.id !== existingItem.id));
+      const response = await axios.post(
+        `http://localhost:8080/api/cart/remove/${pizzaId}`,
+        {},
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+
+      if (response.status === 204) {
+        // Update local cart state optimistically
+        const existingItem = cart.find((item) => item.id === pizzaId);
+        if (existingItem && existingItem.quantity > 1) {
+          setCart(
+            cart.map((item) =>
+              item.id === pizzaId ? { ...item, quantity: item.quantity - 1 } : item
+            )
+          );
+        } else {
+          setCart(cart.filter((item) => item.id !== pizzaId));
+        }
       }
     } catch (error) {
-      console.error('Error removing from cart:', error);
-      setError('Failed to remove item from cart');
+      console.error('Error removing from cart:', error.response?.data || error.message);
     }
   };
 
-  // Helper functions
   const getCartItemQuantity = (pizzaId) => {
-    const item = cartItems.find(item => item.foodId === pizzaId);
+    const item = cart.find((item) => item.id === pizzaId);
     return item ? item.quantity : 0;
   };
 
   const getTotalItems = () => {
-    return cartItems.reduce((total, item) => total + item.quantity, 0);
+    return cart.reduce((total, item) => total + item.quantity, 0);
   };
 
   const getTotalPrice = () => {
-    return cartItems.reduce((total, item) => {
-      const pizza = pizzaMenu.find(p => p.id === item.foodId);
-      return total + (pizza?.price || 0) * item.quantity;
-    }, 0);
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
-  // Filter and sort pizzas
   const filteredPizzas = pizzaMenu.filter((pizza) => {
     const matchesSearch =
       pizza.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -163,14 +129,7 @@ const Pizza = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Error message */}
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 mx-auto max-w-7xl">
-          {error}
-        </div>
-      )}
-
-       {/* Hero Section */}
+      {/* Hero Section */}
       <section className="relative py-16" style={{ background: 'linear-gradient(135deg, #7B4019 0%, #FF7D29 100%)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="text-6xl mb-4">🍕</div>
