@@ -148,99 +148,9 @@ const Pizza = () => {
               <Star className="w-5 h-5 fill-current text-yellow-300" />
               <span>4.7 Rating</span>
             </div>
-<<<<<<< HEAD
-            
-          </section>
-    
-          {/* Pizza Menu */}
-          <section className="py-12">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {sortedPizzas.map((pizza) => (
-                  <div
-                    key={pizza.id}
-                    className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
-                  >
-                    {/* Pizza Image */}
-                    <div
-                      className="h-48 flex items-center justify-center text-6xl relative"
-                      style={{
-                        background: 'linear-gradient(135deg, #FFBF78 0%, #FF7D29 100%)',
-                      }}
-                    >
-                      <img src={`http://localhost:8080${pizza.imageUrl}`} alt={pizza.name} className="h-full w-full object-cover" />
-                    </div>
-    
-                    {/* Pizza Details */}
-                    <div className="p-6">
-                      <div className="flex justify-between items-start mb-3">
-                        <h3 className="text-xl font-bold" style={{ color: '#7B4019' }}>
-                          {pizza.name}
-                        </h3>
-                        <span className="text-2xl font-bold" style={{ color: '#FF7D29' }}>
-                          ${pizza.price.toFixed(2)}
-                        </span>
-                      </div>
-                      <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                        {pizza.description}
-                      </p>
-    
-                      {/* Add to Cart Controls */}
-                      <div className="flex items-center justify-between">
-                        {getCartItemQuantity(pizza.id) > 0 ? (
-                          <div className="flex items-center space-x-3">
-                            <button
-                              onClick={() => removeFromCart(pizza.id)}
-                              className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
-                              style={{ backgroundColor: '#FF7D29' }}
-                            >
-                              <Minus className="w-4 h-4" />
-                            </button>
-                            <span
-                              className="font-bold text-lg"
-                              style={{ color: '#7B4019' }}
-                            >
-                              {getCartItemQuantity(pizza.id)}
-                            </span>
-                            <button
-                              onClick={() => addToCart(pizza)}
-                              className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
-                              style={{ backgroundColor: '#FF7D29' }}
-                            >
-                              <Plus className="w-4 h-4" />
-                            </button>
-                          </div>
-                        ) : (
-                          <button
-                            onClick={() => addToCart(pizza)}
-                            className="flex items-center space-x-2 px-6 py-2 rounded-full text-white font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg"
-                            style={{
-                              background: 'linear-gradient(135deg, #FF7D29 0%, #FFBF78 100%)',
-                            }}
-                          >
-                            <Plus className="w-4 h-4" />
-                            <span>Add to Cart</span>
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              {sortedPizzas.length === 0 && (
-                <div className="text-center py-12">
-                  <div className="text-6xl mb-4">🔍</div>
-                  <h3 className="text-2xl font-bold text-gray-600 mb-2">
-                    No sushis found
-                  </h3>
-                  <p className="text-gray-500">Try adjusting your search or filters</p>
-                </div>
-              )}
-=======
             <div className="flex items-center space-x-2">
               <span className="text-2xl">🔥</span>
               <span>Fresh & Hot</span>
->>>>>>> Cart
             </div>
           </div>
         </div>
