@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Plus, Minus, ShoppingCart, Star, Clock, MapPin, Filter, Search } from 'lucide-react';
+import { useAuth } from '../AuthContext.jsx'; // Adjust path as needed
+import axios from 'axios'; // Added axios import
 
-const Tacos = () => {
-
-    const [cart, setCart] = useState([]);
+const Pizza = () => {
+  const [cart, setCart] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [pizzaMenu, setPizzaMenu] = useState([]);
   const [sortBy, setSortBy] = useState('');
+  
+  const userId = useAuth();
+  console.log('Pizza User ID:', userId);
 
   // Fetch pizza data on component mount
   useEffect(() => {
@@ -30,33 +34,65 @@ const Tacos = () => {
     fetchPizza();
   }, []);
 
-  const addToCart = (pizza) => {
-    const existingItem = cart.find((item) => item.id === pizza.id);
-    if (existingItem) {
-      setCart(
-        cart.map((item) =>
-          item.id === pizza.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
-      );
-    } else {
-      setCart([...cart, { ...pizza, quantity: 1 }]);
+  // Add to cart with backend API integration
+  const addToCart = async (pizza) => {
+    try {
+      const payload = {
+        userId: userId.userId, // Extract the string userId
+        foodId: pizza.id,
+        quantity: '1', // Convert to string to match Map<String, String>
+      };
+
+      console.log('Adding to cart payload:', payload);
+
+      const response = await axios.post('http://localhost:8080/api/cart/add', payload, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      console.log('Cart API response:', response);
+
+      if (response.status === 201) {
+        // Update local cart state based on successful response
+        const existingItem = cart.find((item) => item.id === pizza.id);
+        if (existingItem) {
+          setCart(
+            cart.map((item) =>
+              item.id === pizza.id ? { ...item, quantity: item.quantity + 1 } : item
+            )
+          );
+        } else {
+          setCart([...cart, { ...pizza, quantity: 1 }]);
+        }
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error.response?.data || error.message);
     }
   };
 
-  const removeFromCart = (pizzaId) => {
-    const existingItem = cart.find((item) => item.id === pizzaId);
-    if (existingItem && existingItem.quantity > 1) {
-      setCart(
-        cart.map((item) =>
-          item.id === pizzaId
-            ? { ...item, quantity: item.quantity - 1 }
-            : item
-        )
+  // Remove from cart with backend API integration
+  const removeFromCart = async (pizzaId) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/api/cart/remove/${pizzaId}`,
+        {},
+        { headers: { 'Content-Type': 'application/json' } }
       );
-    } else {
-      setCart(cart.filter((item) => item.id !== pizzaId));
+
+      if (response.status === 204) {
+        // Update local cart state optimistically
+        const existingItem = cart.find((item) => item.id === pizzaId);
+        if (existingItem && existingItem.quantity > 1) {
+          setCart(
+            cart.map((item) =>
+              item.id === pizzaId ? { ...item, quantity: item.quantity - 1 } : item
+            )
+          );
+        } else {
+          setCart(cart.filter((item) => item.id !== pizzaId));
+        }
+      }
+    } catch (error) {
+      console.error('Error removing from cart:', error.response?.data || error.message);
     }
   };
 
@@ -89,10 +125,9 @@ const Tacos = () => {
       default:
         return 0;
     }
-});
+  });
 
   return (
-
     <div className="min-h-screen bg-gray-50">
       
     
@@ -215,7 +250,7 @@ const Tacos = () => {
                 <div className="text-center py-12">
                   <div className="text-6xl mb-4">🔍</div>
                   <h3 className="text-2xl font-bold text-gray-600 mb-2">
-                    No tacos found
+                    No pizzas found
                   </h3>
                   <p className="text-gray-500">Try adjusting your search or filters</p>
                 </div>
@@ -225,6 +260,5 @@ const Tacos = () => {
         </div>
     );
 };
-    
 
-export default Tacos
+export default Pizza;

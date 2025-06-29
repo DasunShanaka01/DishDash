@@ -12,15 +12,27 @@ import {
   ChevronDown,
 } from "lucide-react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Header = ({ cartItems = 0, cartTotal = 0 }) => {
   const { isAuthenticated, userId, checkSession } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false); // Line 18
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     checkSession();
   }, []);
+
+  //Get userId from AuthContext
+  useEffect(() => {
+    if (isAuthenticated) {
+      console.log("User is authenticated with ID:", userId);
+    } else {
+      console.log("User is not authenticated");
+    }
+  }, [isAuthenticated, userId]);
 
   const handleLogout = async () => {
     try {
@@ -73,7 +85,8 @@ const Header = ({ cartItems = 0, cartTotal = 0 }) => {
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
             {/* Cart */}
-            <button
+            <button 
+              onClick={() => navigate("/cart")}
               className="relative flex items-center space-x-2 px-4 py-2 rounded-full text-white font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg"
               style={{
                 background: "linear-gradient(135deg, #FF7D29 0%, #FFBF78 100%)",
