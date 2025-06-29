@@ -3,7 +3,7 @@ import { ArrowLeft, Plus, Minus, ShoppingCart, Star, Clock, MapPin, Filter, Sear
 import { useAuth } from '../AuthContext.jsx'; // Adjust path as needed
 import axios from 'axios'; // Added axios import
 
-const Pizza = () => {
+const Tacos = () => {
   const [cart, setCart] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [pizzaMenu, setPizzaMenu] = useState([]);
@@ -139,7 +139,7 @@ const Pizza = () => {
                 Warm tortillas filled with bold, savory fillings and topped with zesty salsas.
               </h2>
               <p className="text-xl text-white opacity-90 mb-8">
-                A flavor-packed journey to authentic street food perfection.
+                A flavor-packed journey to authentic street food perfection.
               </p>
               <div className="flex items-center justify-center space-x-6 text-white">
                 <div className="flex items-center space-x-2">
@@ -162,7 +162,7 @@ const Pizza = () => {
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6" />
                 <input
                     type="text"
-                    placeholder="Search pizzas..."
+                    placeholder="Search tacos..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-orange-300 focus:border-orange-300 focus:outline-none"
@@ -250,7 +250,7 @@ const Pizza = () => {
                 <div className="text-center py-12">
                   <div className="text-6xl mb-4">🔍</div>
                   <h3 className="text-2xl font-bold text-gray-600 mb-2">
-                    No pizzas found
+                    No tacos found
                   </h3>
                   <p className="text-gray-500">Try adjusting your search or filters</p>
                 </div>
@@ -261,4 +261,4 @@ const Pizza = () => {
     );
 };
 
-export default Pizza;
+export default Tacos;

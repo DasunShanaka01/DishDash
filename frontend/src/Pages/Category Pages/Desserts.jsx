@@ -3,7 +3,7 @@ import { ArrowLeft, Plus, Minus, ShoppingCart, Star, Clock, MapPin, Filter, Sear
 import { useAuth } from '../AuthContext.jsx'; // Adjust path as needed
 import axios from 'axios'; // Added axios import
 
-const Pizza = () => {
+const Desserts = () => {
   const [cart, setCart] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [pizzaMenu, setPizzaMenu] = useState([]);
@@ -132,12 +132,13 @@ const Pizza = () => {
       {/* Hero Section */}
       <section className="relative py-16" style={{ background: 'linear-gradient(135deg, #7B4019 0%, #FF7D29 100%)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="text-6xl mb-4">🍕</div>
+          <div className="text-6xl mb-4">🍰</div>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Authentic Wood-Fired Pizzas
+            Indulgent treats crafted to satisfy your sweet tooth
           </h2>
           <p className="text-xl text-white opacity-90 mb-8">
-            Hand-tossed dough, premium ingredients, baked to perfection
+            From rich chocolate delights to creamy, dreamy classics, every bite is pure bliss.
+
           </p>
           <div className="flex items-center justify-center space-x-6 text-white">
             <div className="flex items-center space-x-2">
@@ -160,7 +161,7 @@ const Pizza = () => {
           <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6" />
           <input
             type="text"
-            placeholder="Search pizzas..."
+            placeholder="Search desserts..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-orange-300 focus:border-orange-300 focus:outline-none"
@@ -258,4 +259,4 @@ const Pizza = () => {
   );
 };
 
-export default Pizza;
+export default Desserts;
