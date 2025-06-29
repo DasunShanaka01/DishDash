@@ -5,6 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.List;
+
 import org.bson.types.ObjectId;
 
 @Document(collection = "OrderPlace")
@@ -16,15 +19,16 @@ public class Place {
     @Id
     private ObjectId orderId;
 
-    private String foodId;
-    private String name;
+    private String userId;
+    private List<Item> items;
+    private double total;
     private String address;
-    private String phoneNumber;
+    private String status;
 
-     public Place(String foodId, String name, String address, String phoneNumber) {
-        this.foodId = foodId;
-        this.name = name;
-        this.address = address;
-        this.phoneNumber = phoneNumber;
+    @Data
+    @NoArgsConstructor
+    public static class Item {
+        private String foodId;
+        private int quantity;
     }
 }
