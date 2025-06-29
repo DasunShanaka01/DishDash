@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Search, MapPin, Clock, Star, ChefHat, Truck, Shield, Heart } from 'lucide-react';
-import Header from '../Components/Header'; 
-import Footer from '../Components/Footer';
 
 
 const DishDashHomepage = () => {
