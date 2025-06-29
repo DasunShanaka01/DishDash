@@ -7,7 +7,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
-
 import org.bson.types.ObjectId;
 
 @Document(collection = "OrderPlace")
@@ -15,11 +14,12 @@ import org.bson.types.ObjectId;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Place {
-    
     @Id
     private ObjectId orderId;
 
     private String userId;
+    private String fullName;
+    private String phoneNumber;
     private List<Item> items;
     private double total;
     private String address;

@@ -124,29 +124,42 @@ const Cart = () => {
 
   // Handle checkout submission
   const handleCheckout = async (e) => {
-    e.preventDefault();
-    try {
-      const placeData = {
-        userId,
-        items: cartItems.map((item) => ({
-          foodId: item.foodId,
-          quantity: item.quantity,
-        })),
-        total: calculateTotal(),
-        address: deliveryAddress,
-        status: "pending",
-      };
+  e.preventDefault();
+  if (!fullName || !phoneNumber || !deliveryAddress) {
+    setError("Please fill in all fields");
+    return;
+  }
 
-      const response = await axios.post("http://localhost:8080/api/v1/order-places", placeData);
-      console.log("Order placed successfully:", response.data);
-      setShowCheckout(false);
-      setCartItems([]); // Clear cart after successful order
-      navigate("/order-confirmation"); // Redirect to a confirmation page
-    } catch (err) {
-      console.error("Checkout error:", err);
-      setError("Failed to place order");
-    }
-  };
+  try {
+    const placeData = {
+      userId,
+      fullName,
+      phoneNumber,
+      items: cartItems.map((item) => ({
+        foodId: item.foodId,
+        quantity: item.quantity,
+      })),
+      total: calculateTotal(),
+      address: deliveryAddress,
+      status: "pending",
+    };
+    console.log("Sending placeData:", placeData); // Log the request body
+
+    const response = await axios.post("http://localhost:8080/api/v1/order-places", placeData, {
+      headers: { "Content-Type": "application/json" },
+    });
+    console.log("Order placed successfully:", response.data);
+    setShowCheckout(false);
+    setCartItems([]);
+    setFullName("");
+    setPhoneNumber("");
+    setDeliveryAddress("");
+    navigate("/cart");
+  } catch (err) {
+    console.error("Checkout error:", err.response?.data || err.message);
+    setError("Failed to place order. Please try again.");
+  }
+};
 
   // Loading state
   if (loading) {
@@ -258,6 +271,7 @@ const Cart = () => {
                 >
                   Place Order
                 </button>
+                {error && <p className="text-red-500 mt-2">{error}</p>}
               </div>
             </form>
           </div>
@@ -313,9 +327,14 @@ const Cart = () => {
                     <div className="flex items-center gap-4">
                       {item.food?.image ? (
                         <img
-                          src={`http://localhost:8080${item.food.imageUrl}`}
+                          src={
+                            item.food.imageUrl
+                              ? `http://localhost:8080${item.food.imageUrl}`
+                              : item.food.image
+                          }
                           alt={item.food.name}
                           className="w-20 h-20 object-cover rounded-lg"
+                          onError={(e) => (e.target.src = "https://via.placeholder.com/80")}
                         />
                       ) : (
                         <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">

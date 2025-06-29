@@ -7,14 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
-
 @Service
-@RequiredArgsConstructor   // Lombok generates a constructor for the final field
+@RequiredArgsConstructor
 public class PlaceService {
-
     private final PlaceRepository placeRepository;
-
-    
 
     public List<Place> findAll() {
         return placeRepository.findAll();
