@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, MapPin, Clock, Star, ChefHat, Truck, Shield, Heart } from 'lucide-react';
-
+import AdvancedHeroSection from '../Components/AdvancedHeroSection';
 
 const DishDashHomepage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -54,42 +54,7 @@ const DishDashHomepage = () => {
     <div className="min-h-screen bg-gray-50">
       
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden h-96 md:h-[325px] b">
-        <div 
-          className="absolute inset-0 transition-all duration-1000 ease-in-out"
-          style={{ background: heroSlides[currentSlide].bg }}
-        >
-          <div className="absolute inset-0 bg-black bg-opacity-20"></div>
-        </div>
-        
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
-          <div className="text-center w-full">
-            <div className="text-6xl md:text-8xl mb-4 animate-bounce">
-              {heroSlides[currentSlide].image}
-            </div>
-            <h2 className="text-4xl md:text-6xl font-bold text-white mb-4 animate-fade-in">
-              {heroSlides[currentSlide].title}
-            </h2>
-            <p className="text-xl md:text-2xl text-white mb-8 opacity-90">
-              {heroSlides[currentSlide].subtitle}
-            </p>
-          </div>
-        </div>
-        
-        {/* Slide Indicators */}
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-          {heroSlides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentSlide ? 'bg-white scale-125' : 'bg-white bg-opacity-50'
-              }`}
-            />
-          ))}
-        </div>
-      </section>
+      <AdvancedHeroSection/>
 
       {/* Cuisine Categories */}
       <section className="py-16 bg-white">
