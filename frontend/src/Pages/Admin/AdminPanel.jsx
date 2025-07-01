@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Edit, Eye, Package, MapPin, Clock, CheckCircle, XCircle, ChefHat, Truck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import FoodDisplay from '../FoodDisplay/FoodDisplay';
 
 const DishDashAdmin = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -218,40 +219,9 @@ const DishDashAdmin = () => {
         navigate('/add-food')
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {foods.map(food => (
-          <div key={food.id} className="bg-white p-6 rounded-lg shadow-md">
-            <img
-              src={food.image}
-              alt={food.name}
-              className="w-full h-32 object-cover rounded-lg mb-4"
-            />
-            <h3 className="text-lg font-semibold mb-2" style={{ color: '#7B4019' }}>{food.name}</h3>
-            <p className="text-gray-600 mb-2">{food.category}</p>
-            <p className="text-xl font-bold mb-4" style={{ color: '#FF7D29' }}>${food.price}</p>
-            <div className="flex justify-between items-center">
-              <span className={`px-3 py-1 rounded-full text-sm ${food.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                {food.available ? 'Available' : 'Unavailable'}
-              </span>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => toggleFoodAvailability(food.id)}
-                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                  style={{ color: '#FF7D29' }}
-                >
-                  <Eye className="w-4 h-4" />
-                </button>
-                <button
-                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                  style={{ color: '#FF7D29' }}
-                >
-                  <Edit className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+      
+        <FoodDisplay/>
+      
     </div>
   );
 
@@ -266,7 +236,7 @@ const DishDashAdmin = () => {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#F5F5F5' }}>
-      {/* Header */}
+      
       <header className="shadow-md p-4" style={{ backgroundColor: '#7B4019' }}>
         <div className="container mx-auto">
           <h1 className="text-2xl font-bold text-white">Dish Dash Admin Panel</h1>
