@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { Plus, Edit, Eye, Package, MapPin, Clock, CheckCircle, XCircle, ChefHat, Truck } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const DishDashAdmin = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
+  
+  const navigate = useNavigate();
+
   const [orders, setOrders] = useState([
     { id: 1, customer: 'John Doe', items: 'Margherita Pizza, Garlic Bread', total: 24.99, status: 'preparing', location: 'Downtown', time: '2024-01-15 14:30' },
     { id: 2, customer: 'Jane Smith', items: 'Pepperoni Pizza, Coke', total: 18.50, status: 'cooking', location: 'Suburbs', time: '2024-01-15 14:45' },
@@ -26,12 +30,6 @@ const DishDashAdmin = () => {
 
   const [showAddFood, setShowAddFood] = useState(false);
 
-  const deliveryLocations = [
-    { area: 'Downtown', orders: 45, avgTime: '25 min' },
-    { area: 'Suburbs', orders: 32, avgTime: '35 min' },
-    { area: 'City Center', orders: 28, avgTime: '20 min' },
-    { area: 'East Side', orders: 19, avgTime: '40 min' }
-  ];
 
   const statusColors = {
     pending: 'bg-yellow-100 text-yellow-800',
@@ -217,71 +215,7 @@ const DishDashAdmin = () => {
       </div>
 
       {showAddFood && (
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold mb-4" style={{ color: '#7B4019' }}>Add New Food Item</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Food Name"
-              value={newFood.name}
-              onChange={(e) => setNewFood({...newFood, name: e.target.value})}
-              className="p-3 border rounded-lg"
-              style={{ borderColor: '#D1D8BE' }}
-            />
-            <input
-              type="number"
-              placeholder="Price"
-              value={newFood.price}
-              onChange={(e) => setNewFood({...newFood, price: e.target.value})}
-              className="p-3 border rounded-lg"
-              style={{ borderColor: '#D1D8BE' }}
-            />
-            <select
-              value={newFood.category}
-              onChange={(e) => setNewFood({...newFood, category: e.target.value})}
-              className="p-3 border rounded-lg"
-              style={{ borderColor: '#D1D8BE' }}
-            >
-              <option value="">Select Category</option>
-              <option value="Pizza">Pizza</option>
-              <option value="Sides">Sides</option>
-              <option value="Drinks">Drinks</option>
-              <option value="Desserts">Desserts</option>
-            </select>
-            <input
-              type="text"
-              placeholder="Image URL"
-              value={newFood.image}
-              onChange={(e) => setNewFood({...newFood, image: e.target.value})}
-              className="p-3 border rounded-lg"
-              style={{ borderColor: '#D1D8BE' }}
-            />
-          </div>
-          <textarea
-            placeholder="Description"
-            value={newFood.description}
-            onChange={(e) => setNewFood({...newFood, description: e.target.value})}
-            className="w-full p-3 border rounded-lg mt-4"
-            style={{ borderColor: '#D1D8BE' }}
-            rows="3"
-          />
-          <div className="flex gap-3 mt-4">
-            <button
-              onClick={addNewFood}
-              className="px-6 py-2 rounded-lg text-white hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: '#FF7D29' }}
-            >
-              Add Food
-            </button>
-            <button
-              onClick={() => setShowAddFood(false)}
-              className="px-6 py-2 rounded-lg border text-gray-700 hover:bg-gray-50 transition-colors"
-              style={{ borderColor: '#D1D8BE' }}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
+        navigate('/add-food')
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -321,63 +255,13 @@ const DishDashAdmin = () => {
     </div>
   );
 
-  const renderLocations = () => (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold" style={{ color: '#7B4019' }}>Delivery Locations</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {deliveryLocations.map((location, index) => (
-          <div key={index} className="bg-white p-6 rounded-lg shadow-md">
-            <div className="flex items-center gap-3 mb-4">
-              <MapPin className="w-6 h-6" style={{ color: '#FF7D29' }} />
-              <h3 className="text-xl font-semibold" style={{ color: '#7B4019' }}>{location.area}</h3>
-            </div>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Active Orders:</span>
-                <span className="font-semibold" style={{ color: '#FF7D29' }}>{location.orders}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Avg. Delivery Time:</span>
-                <span className="font-semibold" style={{ color: '#FF7D29' }}>{location.avgTime}</span>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h3 className="text-xl font-semibold mb-4" style={{ color: '#7B4019' }}>Add New Delivery Area</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input
-            type="text"
-            placeholder="Area Name"
-            className="p-3 border rounded-lg"
-            style={{ borderColor: '#D1D8BE' }}
-          />
-          <input
-            type="text"
-            placeholder="Estimated Delivery Time"
-            className="p-3 border rounded-lg"
-            style={{ borderColor: '#D1D8BE' }}
-          />
-        </div>
-        <button
-          className="mt-4 px-6 py-2 rounded-lg text-white flex items-center gap-2 hover:opacity-90 transition-opacity"
-          style={{ backgroundColor: '#FF7D29' }}
-        >
-          <Plus className="w-4 h-4" />
-          Add Area
-        </button>
-      </div>
-    </div>
-  );
 
   const tabs = [
     { id: 'dashboard', label: 'Dashboard', icon: Package },
     { id: 'orders', label: 'Orders', icon: Clock },
     { id: 'foods', label: 'Food Items', icon: ChefHat },
-    { id: 'locations', label: 'Locations', icon: MapPin }
+
   ];
 
   return (
@@ -425,7 +309,7 @@ const DishDashAdmin = () => {
             {activeTab === 'dashboard' && renderDashboard()}
             {activeTab === 'orders' && renderOrders()}
             {activeTab === 'foods' && renderFoods()}
-            {activeTab === 'locations' && renderLocations()}
+            
           </main>
         </div>
       </div>
