@@ -66,10 +66,15 @@ const AddFood = () => {
   const categories = ['Pizzas', 'Burgers', 'Sushi', 'Desserts', 'Salads','Tacos'];
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-5 bg-white shadow-md rounded-md">
-      <h2 className="text-2xl font-bold text-center mb-5">Add New Food</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
+    <div className="mx-auto bg-white shadow-md rounded-md">
+      <header className="shadow-md p-4" style={{ backgroundColor: '#7B4019' }}>
+        <div className="container mx-auto">
+          <h1 className="text-2xl font-bold text-white">Dish Dash Admin Panel</h1>
+        </div>
+      </header>
+      <h2 className="text-2xl font-bold text-center mb-5 mt-10">Add New Food</h2>
+      <form onSubmit={handleSubmit} className="max-w-md mx-auto bg-white shadow-md rounded-md">
+        <div className="mb-4 max-w-md">
           <label htmlFor="name" className="block text-gray-700 font-medium mb-2">
             Food Name
           </label>
@@ -146,7 +151,7 @@ const AddFood = () => {
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white font-medium py-2 rounded-md hover:bg-blue-600 transition duration-200"
+          className="w-full bg-blue-500 text-white font-medium py-2 rounded-md hover:bg-blue-600 transition duration-200 mb-10"
           disabled={!foodData.name || !foodData.description || !foodData.price || !foodData.category} // Disable if required fields are empty
         >
           Add Food

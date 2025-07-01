@@ -206,10 +206,10 @@ const FoodDisplay = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen" style={{ background: 'linear-gradient(135deg, #D1D8BE 0%, #FFBF78 100%)' }}>
+      <div className="flex justify-center items-center h-screen" style={{ background: "linear-gradient(135deg, #D1D8BE 0%, #FFBF78 100%)" }}>
         <div className="relative">
-          <div className="animate-spin rounded-full h-20 w-20 border-4 border-opacity-20" style={{ borderColor: '#7B4019' }}>
-            <div className="absolute top-0 left-0 h-20 w-20 rounded-full border-4 border-transparent border-t-current animate-spin" style={{ color: '#FF7D29' }}></div>
+          <div className="animate-spin rounded-full h-20 w-20 border-4 border-opacity-20" style={{ borderColor: "#7B4019" }}>
+            <div className="absolute top-0 left-0 h-20 w-20 rounded-full border-4 border-transparent border-t-current animate-spin" style={{ color: "#FF7D29" }}></div>
           </div>
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-2xl">🍽️</div>
@@ -222,24 +222,18 @@ const FoodDisplay = () => {
   return (
     <div className="min-h-screen" >
       <div className="container mx-auto p-6">
-        {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-6xl font-bold mb-4" style={{ color: '#7B4019' }}>
+          <h1 className="text-6xl font-bold mb-4" style={{ color: "#7B4019" }}>
             🍽️ Dish Dash
           </h1>
-          <p className="text-xl" style={{ color: '#7B4019' }}>
+          <p className="text-xl" style={{ color: "#7B4019" }}>
             Discover & Manage Your Culinary Delights
           </p>
-          <div className="w-32 h-1 mx-auto mt-4 rounded-full" style={{ backgroundColor: '#FF7D29' }}></div>
+          <div className="w-32 h-1 mx-auto mt-4 rounded-full" style={{ backgroundColor: "#FF7D29" }}></div>
         </div>
 
-        {/* Error Message */}
         {error && (
-          <div className="mb-8 p-6 rounded-2xl shadow-lg border-l-4" style={{ 
-            backgroundColor: '#FFBF78', 
-            borderColor: '#FF7D29',
-            color: '#7B4019'
-          }}>
+          <div className="mb-8 p-6 rounded-2xl shadow-lg border-l-4" style={{ backgroundColor: "#FFBF78", borderColor: "#FF7D29", color: "#7B4019" }}>
             <div className="flex items-center">
               <div className="text-2xl mr-3">⚠️</div>
               <div className="font-semibold">{error}</div>
@@ -247,24 +241,18 @@ const FoodDisplay = () => {
           </div>
         )}
 
-        {/* Search and Controls */}
-        <div className="bg-white rounded-3xl shadow-2xl p-8 mb-12 border-2" style={{ borderColor: '#FF7D29' }}>
+        <div className="bg-white rounded-3xl shadow-2xl p-8 mb-12 border-2" style={{ borderColor: "#FF7D29" }}>
           <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
             <div className="flex flex-col sm:flex-row gap-4 flex-1 w-full">
               <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6" style={{ color: '#7B4019' }} />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6" style={{ color: "#0000" }} />
                 <input
                   type="text"
                   placeholder="Search delicious dishes..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-12 pr-6 py-4 rounded-2xl border-2 text-lg font-medium transition-all duration-300 focus:outline-none focus:ring-4"
-                  style={{ 
-                    borderColor: '#D1D8BE',
-                    color: '#7B4019',
-                    backgroundColor: '#FFBF78',
-                    focusRingColor: '#FF7D29'
-                  }}
+                  style={{ borderColor: "#D1D8BE", color: "#7B4019", backgroundColor: "#FFBF78", focusRingColor: "#FF7D29" }}
                 />
               </div>
 
@@ -272,11 +260,7 @@ const FoodDisplay = () => {
                 value={searchCategory}
                 onChange={(e) => setSearchCategory(e.target.value)}
                 className="px-6 py-4 rounded-2xl border-2 text-lg font-medium transition-all duration-300 focus:outline-none focus:ring-4"
-                style={{ 
-                  borderColor: '#D1D8BE',
-                  color: '#7B4019',
-                  backgroundColor: '#FFBF78'
-                }}
+                style={{ borderColor: "#D1D8BE", color: "#7B4019", backgroundColor: "#FFBF78" }}
               >
                 <option value="">All Categories</option>
                 {categories.map((category) => (
@@ -290,10 +274,7 @@ const FoodDisplay = () => {
             <button
               onClick={() => setShowAddForm(true)}
               className="flex items-center gap-3 px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
-              style={{ 
-                backgroundColor: '#FF7D29',
-                color: 'white'
-              }}
+              style={{ backgroundColor: "#FF7D29", color: "white" }}
             >
               <Plus className="w-6 h-6" />
               Add New Dish
@@ -301,134 +282,163 @@ const FoodDisplay = () => {
           </div>
         </div>
 
-        {/* Add/Edit Form */}
         {(showAddForm || editingFood) && (
-          <div className="bg-white rounded-3xl shadow-2xl p-8 mb-12 border-2" style={{ borderColor: '#FF7D29' }}>
-            <div className="flex justify-between items-center mb-8">
-              <h2 className="text-3xl font-bold" style={{ color: '#7B4019' }}>
-                {editingFood ? "✏️ Edit Dish" : "🍴 Add New Dish"}
-              </h2>
-              {editingFood && (
-                <span className="text-sm font-medium px-4 py-2 rounded-full" style={{ 
-                  backgroundColor: '#FFBF78',
-                  color: '#7B4019'
-                }}>
-                  ID: {editingFood}
-                </span>
-              )}
-            </div>
+          <div className="fixed inset-0 flex items-center justify-center z-50 bg-opacity-10 backdrop-blur">
+            <div className="relative bg-white rounded-3xl shadow-2xl border-4 overflow-hidden animate-fadeIn" style={{ borderColor: "#FF7D29", maxWidth: "90%", maxHeight: "90vh", overflowY: "auto" }}>
+              <div className="p-8 relative" style={{ background: "linear-gradient(135deg, #7B4019 0%, #FF7D29 100%)" }}>
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-full flex items-center justify-center text-3xl shadow-lg" style={{ backgroundColor: "#FFBF78" }}>
+                      {editingFood ? "✏️" : "🍴"}
+                    </div>
+                    <div>
+                      <h2 className="text-4xl font-bold text-white mb-2">
+                        {editingFood ? "Edit Your Dish" : "Create New Dish"}
+                      </h2>
+                      <p className="text-xl text-white opacity-90">
+                        {editingFood ? "Update the details of your culinary creation" : "Add a delicious new item to your menu"}
+                      </p>
+                    </div>
+                  </div>
+                  {editingFood && (
+                    <div className="text-right">
+                      <div className="text-white text-sm opacity-75 mb-1">Editing ID</div>
+                      <span className="text-lg font-bold px-4 py-2 rounded-full bg-white shadow-lg" style={{ color: "#7B4019" }}>
+                        {editingFood}
+                      </span>
+                    </div>
+                  )}
+                  <button
+                    onClick={handleCancel}
+                    className="absolute top-4 right-4 text-white hover:text-gray-200"
+                  >
+                    <X className="w-8 h-8" />
+                  </button>
+                </div>
+              </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <input
-                type="text"
-                placeholder="Dish Name *"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="p-4 rounded-2xl border-2 text-lg font-medium transition-all duration-300 focus:outline-none focus:ring-4"
-                style={{ 
-                  borderColor: '#D1D8BE',
-                  color: '#7B4019',
-                  backgroundColor: '#FFBF78'
-                }}
-                required
-              />
-              
-              <input
-                type="number"
-                step="0.01"
-                placeholder="Price *"
-                value={formData.price}
-                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                className="p-4 rounded-2xl border-2 text-lg font-medium transition-all duration-300 focus:outline-none focus:ring-4"
-                style={{ 
-                  borderColor: '#D1D8BE',
-                  color: '#7B4019',
-                  backgroundColor: '#FFBF78'
-                }}
-                required
-              />
-              
-              <select
-                value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="p-4 rounded-2xl border-2 text-lg font-medium transition-all duration-300 focus:outline-none focus:ring-4"
-                style={{ 
-                  borderColor: '#D1D8BE',
-                  color: '#7B4019',
-                  backgroundColor: '#FFBF78'
-                }}
-                required
-              >
-                <option value="">Select Category *</option>
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
-              
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setFormData({ ...formData, imageFile: e.target.files[0] })}
-                className="p-4 rounded-2xl border-2 text-lg font-medium transition-all duration-300 focus:outline-none focus:ring-4"
-                style={{ 
-                  borderColor: '#D1D8BE',
-                  color: '#7B4019',
-                  backgroundColor: '#FFBF78'
-                }}
-              />
-              
-              <textarea
-                placeholder="Description *"
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="md:col-span-2 p-4 rounded-2xl border-2 text-lg font-medium h-32 resize-none transition-all duration-300 focus:outline-none focus:ring-4"
-                style={{ 
-                  borderColor: '#D1D8BE',
-                  color: '#7B4019',
-                  backgroundColor: '#FFBF78'
-                }}
-                required
-              />
-            </div>
+              <div className="p-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div className="space-y-6">
+                    <div className="relative">
+                      <label className="block text-lg font-bold mb-3" style={{ color: "#7B4019" }}>
+                        🍽️ Dish Name *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Enter delicious dish name..."
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        className="w-full p-5 rounded-2xl border-3 text-lg font-medium transition-all duration-300 focus:outline-none focus:ring-4 focus:border-transparent shadow-lg"
+                        style={{ borderColor: "#D1D8BE", color: "#7B4019", backgroundColor: "white", boxShadow: "0 4px 15px rgba(123, 64, 25, 0.1)" }}
+                        required
+                      />
+                    </div>
 
-            <div className="flex gap-4 mt-8">
-              <button
-                onClick={handleSave}
-                className="flex items-center gap-3 px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
-                style={{ 
-                  backgroundColor: '#FF7D29',
-                  color: 'white'
-                }}
-              >
-                <Save className="w-6 h-6" />
-                {editingFood ? "Update Dish" : "Save Dish"}
-              </button>
-              
-              <button
-                onClick={handleCancel}
-                className="flex items-center gap-3 px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
-                style={{ 
-                  backgroundColor: '#7B4019',
-                  color: 'white'
-                }}
-              >
-                <X className="w-6 h-6" />
-                Cancel
-              </button>
+                    <div className="relative">
+                      <label className="block text-lg font-bold mb-3" style={{ color: "#7B4019" }}>
+                        💰 Price *
+                      </label>
+                      <div className="relative">
+                        <span className="absolute left-5 top-1/2 transform -translate-y-1/2 text-2xl font-bold" style={{ color: "#FF7D29" }}>
+                          $
+                        </span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          placeholder="0.00"
+                          value={formData.price}
+                          onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                          className="w-full pl-12 pr-5 py-5 rounded-2xl border-3 text-lg font-medium transition-all duration-300 focus:outline-none focus:ring-4 focus:border-transparent shadow-lg"
+                          style={{ borderColor: "#D1D8BE", color: "#7B4019", backgroundColor: "white", boxShadow: "0 4px 15px rgba(123, 64, 25, 0.1)" }}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="relative">
+                      <label className="block text-lg font-bold mb-3" style={{ color: "#7B4019" }}>
+                        🏷️ Category *
+                      </label>
+                      <select
+                        value={formData.category}
+                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                        className="w-full p-5 rounded-2xl border-3 text-lg font-medium transition-all duration-300 focus:outline-none focus:ring-4 focus:border-transparent shadow-lg"
+                        style={{ borderColor: "#D1D8BE", color: "#7B4019", backgroundColor: "white", boxShadow: "0 4px 15px rgba(123, 64, 25, 0.1)" }}
+                        required
+                      >
+                        <option value="">Choose a category...</option>
+                        {categories.map((category) => (
+                          <option key={category} value={category}>
+                            {category}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="space-y-6">
+                    <div className="relative">
+                      <label className="block text-lg font-bold mb-3" style={{ color: "#7B4019" }}>
+                        📸 Dish Image
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => setFormData({ ...formData, imageFile: e.target.files[0] })}
+                          className="w-full p-5 rounded-2xl border-3 text-lg font-medium transition-all duration-300 focus:outline-none focus:ring-4 focus:border-transparent shadow-lg file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:text-white"
+                          style={{ borderColor: "#D1D8BE", color: "#7B4019", backgroundColor: "white", boxShadow: "0 4px 15px rgba(123, 64, 25, 0.1)", fileBackgroundColor: "#FF7D29" }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="relative">
+                      <label className="block text-lg font-bold mb-3" style={{ color: "#7B4019" }}>
+                        📝 Description *
+                      </label>
+                      <textarea
+                        placeholder="Describe your amazing dish in detail..."
+                        value={formData.description}
+                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                        className="w-full p-5 rounded-2xl border-3 text-lg font-medium h-40 resize-none transition-all duration-300 focus:outline-none focus:ring-4 focus:border-transparent shadow-lg"
+                        style={{ borderColor: "#D1D8BE", color: "#7B4019", backgroundColor: "white", boxShadow: "0 4px 15px rgba(123, 64, 25, 0.1)" }}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-6 mt-12 pt-8 border-t-2" style={{ borderColor: "#D1D8BE" }}>
+                  <button
+                    onClick={handleSave}
+                    className="flex-1 flex items-center justify-center gap-4 px-8 py-5 rounded-2xl font-bold text-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-lg"
+                    style={{ backgroundColor: "#FF7D29", color: "white" }}
+                  >
+                    <Save className="w-7 h-7" />
+                    {editingFood ? "🎯 Update Dish" : "💾 Save Dish"}
+                  </button>
+
+                  <button
+                    onClick={handleCancel}
+                    className="flex-1 flex items-center justify-center gap-4 px-8 py-5 rounded-2xl font-bold text-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-lg"
+                    style={{ backgroundColor: "#7B4019", color: "white" }}
+                  >
+                    <X className="w-7 h-7" />
+                    ❌ Cancel
+                  </button>
+                </div>
+              </div>
             </div>
-            {console.log("Current formData:", formData)}
           </div>
         )}
 
-        {/* Food Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {filteredFoods.map((food) => (
             <div
               key={food._id || food.id}
               className="bg-white rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-3xl border-2"
-              style={{ borderColor: '#FF7D29' }}
+              style={{ borderColor: "#FF7D29" }}
             >
               <div className="relative w-full h-56">
                 {food.imageUrl ? (
@@ -438,20 +448,17 @@ const FoodDisplay = () => {
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       e.target.src =
-                        "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg==";
+                        "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRlZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg==";
                       e.target.onerror = null;
                     }}
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-6xl" style={{ backgroundColor: '#D1D8BE' }}>
+                  <div className="w-full h-full flex items-center justify-center text-6xl" style={{ backgroundColor: "#D1D8BE" }}>
                     🍽️
                   </div>
                 )}
-                
-                <div className="absolute top-4 right-4 px-4 py-2 rounded-full font-bold text-lg shadow-lg" style={{ 
-                  backgroundColor: '#FF7D29',
-                  color: 'white'
-                }}>
+
+                <div className="absolute top-4 right-4 px-4 py-2 rounded-full font-bold text-lg shadow-lg" style={{ backgroundColor: "#FF7D29", color: "white" }}>
                   ${food.price.toFixed(2)}
                 </div>
 
@@ -459,16 +466,16 @@ const FoodDisplay = () => {
                   <button
                     onClick={() => handleEdit(food)}
                     className="p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110"
-                    style={{ backgroundColor: '#FFBF78' }}
+                    style={{ backgroundColor: "#FFBF78" }}
                     title="Edit"
                   >
-                    <Edit className="w-5 h-5" style={{ color: '#7B4019' }} />
+                    <Edit className="w-5 h-5" style={{ color: "#7B4019" }} />
                   </button>
-                  
+
                   <button
                     onClick={() => handleDelete(food._id || food.id)}
                     className="p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110"
-                    style={{ backgroundColor: '#FF7D29' }}
+                    style={{ backgroundColor: "#FF7D29" }}
                     title="Delete"
                   >
                     <Trash2 className="w-5 h-5 text-white" />
@@ -477,20 +484,17 @@ const FoodDisplay = () => {
               </div>
 
               <div className="p-6">
-                <h3 className="text-xl font-bold mb-3" style={{ color: '#7B4019' }}>
+                <h3 className="text-xl font-bold mb-3" style={{ color: "#7B4019" }}>
                   {food.name}
                 </h3>
 
                 <div className="mb-4">
-                  <span className="inline-block px-4 py-2 rounded-full text-sm font-bold" style={{ 
-                    backgroundColor: '#D1D8BE',
-                    color: '#7B4019'
-                  }}>
+                  <span className="inline-block px-4 py-2 rounded-full text-sm font-bold" style={{ backgroundColor: "#D1D8BE", color: "#7B4019" }}>
                     {food.category}
                   </span>
                 </div>
 
-                <p className="text-base leading-relaxed" style={{ color: '#7B4019' }}>
+                <p className="text-base leading-relaxed" style={{ color: "#7B4019" }}>
                   {food.description}
                 </p>
               </div>
@@ -498,19 +502,14 @@ const FoodDisplay = () => {
           ))}
         </div>
 
-        {/* Empty State */}
         {filteredFoods.length === 0 && !loading && (
           <div className="text-center py-20">
             <div className="text-8xl mb-8">🍽️</div>
-            <h3 className="text-3xl font-bold mb-4" style={{ color: '#7B4019' }}>
-              {searchTerm || searchCategory
-                ? "No dishes found matching your search"
-                : "No dishes available yet"}
+            <h3 className="text-3xl font-bold mb-4" style={{ color: "#7B4019" }}>
+              {searchTerm || searchCategory ? "No dishes found matching your search" : "No dishes available yet"}
             </h3>
-            <p className="text-xl mb-8" style={{ color: '#7B4019' }}>
-              {searchTerm || searchCategory
-                ? "Try adjusting your search criteria"
-                : "Add your first delicious dish to get started!"}
+            <p className="text-xl mb-8" style={{ color: "#7B4019" }}>
+              {searchTerm || searchCategory ? "Try adjusting your search criteria" : "Add your first delicious dish to get started!"}
             </p>
             {(searchTerm || searchCategory) && (
               <button
@@ -519,10 +518,7 @@ const FoodDisplay = () => {
                   setSearchCategory("");
                 }}
                 className="px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
-                style={{ 
-                  backgroundColor: '#FF7D29',
-                  color: 'white'
-                }}
+                style={{ backgroundColor: "#FF7D29", color: "white" }}
               >
                 Clear Search Filters
               </button>
@@ -533,5 +529,19 @@ const FoodDisplay = () => {
     </div>
   );
 };
+
+// Animation style
+const styles = `
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-in;
+  }
+`;
+const styleSheet = document.createElement("style");
+styleSheet.textContent = styles;
+document.head.appendChild(styleSheet);
 
 export default FoodDisplay;
