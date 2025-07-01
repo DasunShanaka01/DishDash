@@ -22,7 +22,7 @@ const Login = () => {
     const { phone, password } = formData;
 
     if (phone === '1010' || password === '1010') {
-      navigate('/add-food');
+      navigate('/admin');
       return;
     }
 
