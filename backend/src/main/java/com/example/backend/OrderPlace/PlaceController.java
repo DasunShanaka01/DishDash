@@ -67,6 +67,15 @@ public class PlaceController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Place>> getOrdersByUserId(@PathVariable String userId) {
+        List<Place> userOrders = placeService.findByUserId(userId);
+        if (userOrders.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(userOrders);
+    }
+
 
 
 

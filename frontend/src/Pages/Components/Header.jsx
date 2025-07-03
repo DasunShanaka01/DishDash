@@ -127,7 +127,7 @@ const Header = ({ cartItems = 0, cartTotal = 0 }) => {
                         My Profile
                       </a>
                       <a
-                        href="/orders"
+                        href="/user-orders"
                         className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors"
                       >
                         My Orders
@@ -149,7 +149,7 @@ const Header = ({ cartItems = 0, cartTotal = 0 }) => {
                         Sign In
                       </a>
                       <a
-                        href="/signup"
+                        href="/"
                         className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors"
                       >
                         Sign Up

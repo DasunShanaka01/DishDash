@@ -36,5 +36,10 @@ public class PlaceService {
                 });
     }
 
+    public List<Place> findByUserId(String userId) {
+    return placeRepository.findByUserId(userId);
+    }
+
+    
 
 }
