@@ -31,4 +31,8 @@ public class Place {
         private String foodId;
         private int quantity;
     }
+    
+     public String getOrderId() {
+        return orderId != null ? orderId.toString() : null;
+    }
 }

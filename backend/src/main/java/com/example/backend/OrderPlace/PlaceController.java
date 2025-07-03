@@ -1,6 +1,7 @@
 package com.example.backend.OrderPlace;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
@@ -50,4 +51,23 @@ public class PlaceController {
         placeService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<Place> updateOrderStatus(
+            @PathVariable ObjectId id,
+            @RequestBody Map<String, String> statusUpdate) {
+        
+        String newStatus = statusUpdate.get("status");
+        if (newStatus == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return placeService.updateStatus(id, newStatus)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+
+
+
 }

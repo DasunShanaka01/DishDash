@@ -27,4 +27,14 @@ public class PlaceService {
     public void delete(ObjectId id) {
         placeRepository.deleteById(id);
     }
+
+     public Optional<Place> updateStatus(ObjectId orderId, String newStatus) {
+        return placeRepository.findByOrderId(orderId)
+                .map(order -> {
+                    order.setStatus(newStatus);
+                    return placeRepository.save(order);
+                });
+    }
+
+
 }

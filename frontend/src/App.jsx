@@ -18,6 +18,7 @@ import { AuthProvider } from './Pages/AuthContext.jsx';
 import AdminPanel from './Pages/Admin/AdminPanel.jsx';
 import Cart from './Pages/Cart/Cart.jsx';
 import AdvancedHeroSection from './Pages/Components/AdvancedHeroSection.jsx';
+import Orders from './Pages/Admin/Orders.jsx';
 
 function App() {
   const location = useLocation(); // Get the current route
@@ -46,6 +47,7 @@ function App() {
             <Route path="/admin" element={<AdminPanel />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/advanced-hero" element={<AdvancedHeroSection />} />
+            <Route path="/orders" element={<Orders />} />
             <Route path="/about" element={<h1>About Page</h1>} />
             <Route path="/contact" element={<h1>Contact Page</h1>} />
             <Route path="*" element={<h1>404 Not Found</h1>} />
