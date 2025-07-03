@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Clock, Truck, CheckCircle, XCircle, ChefHat, Package, Plus, Edit, Eye, MapPin } from 'lucide-react';
+import FoodDisplay from '../FoodDisplay/FoodDisplay';
 
 const DishDashAdmin = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -465,7 +466,7 @@ const DishDashAdmin = () => {
         </button>
       </div>
       <div className="bg-white p-6 rounded-lg shadow-md">
-        <p className="text-center text-gray-500 py-8">Food management component would go here</p>
+        <FoodDisplay />
       </div>
     </div>
   );
