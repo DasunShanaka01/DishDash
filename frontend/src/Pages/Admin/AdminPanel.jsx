@@ -1,24 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, Edit, Eye, Package, MapPin, Clock, CheckCircle, XCircle, ChefHat, Truck } from 'lucide-react';
-// Using fetch instead of axios for browser compatibility
-
-// Mock components for demonstration
-const FoodDisplay = () => (
-  <div className="bg-white p-6 rounded-lg shadow-md">
-    <h3 className="text-xl font-semibold mb-4" style={{ color: '#7B4019' }}>Food Items</h3>
-    <p className="text-gray-600">Food display component would go here</p>
-  </div>
-);
-
-const Orders = () => (
-  <div className="bg-white p-6 rounded-lg shadow-md">
-    <h3 className="text-xl font-semibold mb-4" style={{ color: '#7B4019' }}>Orders Component</h3>
-    <p className="text-gray-600">Orders component would go here</p>
-  </div>
-);
+import React, { useState, useEffect, useCallback } from 'react';
+import { Clock, Truck, CheckCircle, XCircle, ChefHat, Package, Plus, Edit, Eye, MapPin } from 'lucide-react';
 
 const DishDashAdmin = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [ordersData, setOrdersData] = useState([]);
+  const [foodNames, setFoodNames] = useState({});
   const [dashboardData, setDashboardData] = useState({
     totalOrders: 0,
     activeOrders: 0,
@@ -50,59 +36,34 @@ const DishDashAdmin = () => {
     rejected: XCircle
   };
 
-  // Function to fetch dashboard data from backend
-  const fetchDashboardData = async () => {
+  const validStatuses = ['pending', 'preparing', 'cooking', 'delivery', 'completed', 'rejected'];
+
+  // Centralized data fetching function
+  const fetchAllData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Fetch orders data
+      // Fetch orders
       const ordersResponse = await fetch(`${API_BASE_URL}/api/v1/order-places`);
       if (!ordersResponse.ok) {
         throw new Error(`HTTP error! status: ${ordersResponse.status}`);
       }
       const orders = await ordersResponse.json();
 
-      // Fetch food items data (assuming you have a food API endpoint)
-      let foodItems = [];
-      try {
-        const foodResponse = await fetch(`${API_BASE_URL}/api/food`);
-        if (foodResponse.ok) {
-          foodItems = await foodResponse.json() || [];
-        }
-      } catch (foodError) {
-        console.warn('Food API not available, using default value');
-      }
+      // Normalize orders
+      const normalizedOrders = orders.map(order => ({
+        ...order,
+        status: validStatuses.includes(order.status?.toLowerCase()) ? order.status.toLowerCase() : 'pending'
+      }));
 
-      // Calculate statistics
-      const totalOrders = orders.length;
-      const activeOrders = orders.filter(order => 
-        ['preparing', 'cooking', 'delivery'].includes(order.status?.toLowerCase())
-      ).length;
-      
-      // Calculate today's revenue
-      const today = new Date().toISOString().split('T')[0];
-      const todayOrders = orders.filter(order => {
-        const orderDate = new Date(order.createdAt || order.timestamp || Date.now())
-          .toISOString().split('T')[0];
-        return orderDate === today;
-      });
-      const revenueToday = todayOrders.reduce((sum, order) => sum + (order.total || 0), 0);
-
-      // Get recent orders (last 5)
-      const recentOrders = orders
-        .sort((a, b) => new Date(b.createdAt || b.timestamp || 0) - new Date(a.createdAt || a.timestamp || 0))
-        .slice(0, 5);
-
-      // Fetch food names for recent orders
-      const foodNameCache = {};
+      // Fetch food names
       const uniqueFoodIds = [...new Set(
-        recentOrders.flatMap(order => 
+        normalizedOrders.flatMap(order => 
           order.items && Array.isArray(order.items) ? order.items.map(item => item.foodId) : []
         )
       )];
 
-      // Fetch food names in parallel
       const foodNamePromises = uniqueFoodIds.map(async (foodId) => {
         try {
           const foodResponse = await fetch(`${API_BASE_URL}/api/food/${foodId}`);
@@ -117,45 +78,106 @@ const DishDashAdmin = () => {
       });
 
       const foodNameResults = await Promise.all(foodNamePromises);
-      foodNameResults.forEach(({ foodId, name }) => {
-        foodNameCache[foodId] = name;
+      const foodNameMap = foodNameResults.reduce((acc, { foodId, name }) => ({
+        ...acc,
+        [foodId]: name
+      }), {});
+
+      // Fetch menu items count
+      let menuItemsCount = 0;
+      try {
+        const foodResponse = await fetch(`${API_BASE_URL}/api/food`);
+        if (foodResponse.ok) {
+          const foodItems = await foodResponse.json();
+          menuItemsCount = foodItems.length;
+        }
+      } catch (foodError) {
+        console.warn('Food API not available');
+      }
+
+      // Calculate dashboard statistics
+      const totalOrders = normalizedOrders.length;
+      const activeOrders = normalizedOrders.filter(order => 
+        ['preparing', 'cooking', 'delivery'].includes(order.status)
+      ).length;
+      
+      const today = new Date().toISOString().split('T')[0];
+      const todayOrders = normalizedOrders.filter(order => {
+        const orderDate = new Date(order.createdAt || order.timestamp || Date.now())
+          .toISOString().split('T')[0];
+        return orderDate === today;
       });
+      const revenueToday = todayOrders.reduce((sum, order) => sum + (order.total || 0), 0);
 
-      // Format recent orders with food names
-      const formattedRecentOrders = recentOrders.map(order => ({
-        ...order,
-        itemsDisplay: order.items && Array.isArray(order.items)
-          ? order.items.map(item => `${foodNameCache[item.foodId] || item.foodId} (${item.quantity})`).join(', ')
-          : 'No items',
-        status: order.status?.toLowerCase() || 'pending'
-      }));
+      const recentOrders = normalizedOrders
+        .sort((a, b) => new Date(b.createdAt || b.timestamp || 0) - new Date(a.createdAt || a.timestamp || 0))
+        .slice(0, 5)
+        .map(order => ({
+          ...order,
+          itemsDisplay: order.items && Array.isArray(order.items)
+            ? order.items.map(item => `${foodNameMap[item.foodId] || item.foodId} (${item.quantity})`).join(', ')
+            : 'No items'
+        }));
 
+      // Update state
+      setOrdersData(normalizedOrders);
+      setFoodNames(foodNameMap);
       setDashboardData({
         totalOrders,
         activeOrders,
-        menuItems: foodItems.length,
+        menuItems: menuItemsCount,
         revenueToday,
-        recentOrders: formattedRecentOrders
+        recentOrders
       });
 
     } catch (err) {
-      console.error('Error fetching dashboard data:', err);
-      setError('Failed to fetch dashboard data: ' + err.message);
+      console.error('Error fetching data:', err);
+      setError('Failed to fetch data: ' + err.message);
     } finally {
       setLoading(false);
     }
+  }, []);
+
+  // Handle order status update
+  const handleStatusChange = async (orderId, newStatus) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/v1/order-places/${orderId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update order status');
+      }
+
+      // Update local state
+      setOrdersData(orders => 
+        orders.map(order => 
+          order.orderId === orderId ? { ...order, status: newStatus } : order
+        )
+      );
+
+      // Refresh dashboard data
+      fetchAllData();
+    } catch (err) {
+      console.error('Update error:', err);
+      setError('Failed to update order status: ' + err.message);
+    }
   };
 
-  // Fetch dashboard data on component mount
+  // Fetch data on component mount
   useEffect(() => {
-    fetchDashboardData();
-  }, []);
+    fetchAllData();
+  }, [fetchAllData]);
 
-  // Auto-refresh dashboard data every 30 seconds
+  // Auto-refresh every 30 seconds
   useEffect(() => {
-    const interval = setInterval(fetchDashboardData, 30000);
+    const interval = setInterval(fetchAllData, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchAllData]);
 
   const renderDashboard = () => {
     if (loading) {
@@ -177,7 +199,7 @@ const DishDashAdmin = () => {
               <p className="text-red-700">{error}</p>
             </div>
             <button
-              onClick={fetchDashboardData}
+              onClick={fetchAllData}
               className="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
             >
               Retry
@@ -229,7 +251,7 @@ const DishDashAdmin = () => {
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-xl font-semibold" style={{ color: '#7B4019' }}>Recent Orders</h3>
             <button
-              onClick={fetchDashboardData}
+              onClick={fetchAllData}
               className="px-3 py-1 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors text-sm"
             >
               Refresh
@@ -247,10 +269,8 @@ const DishDashAdmin = () => {
                 <thead>
                   <tr className="border-b">
                     <th className="text-left p-3">Order ID</th>
-                    <th className="text-left p-3">Customer</th>
-                    <th className="text-left p-3">Items</th>
-                    <th className="text-left p-3">Total</th>
                     <th className="text-left p-3">Status</th>
+                    <th className="text-left p-3">Quick Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -259,16 +279,21 @@ const DishDashAdmin = () => {
                     return (
                       <tr key={order.orderId} className="border-b hover:bg-gray-50">
                         <td className="p-3">#{order.orderId}</td>
-                        <td className="p-3">{order.fullName || 'Unknown Customer'}</td>
-                        <td className="p-3 max-w-xs truncate" title={order.itemsDisplay}>
-                          {order.itemsDisplay}
-                        </td>
-                        <td className="p-3">${(order.total || 0).toFixed(2)}</td>
+
+
                         <td className="p-3">
                           <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm ${statusColors[order.status]}`}>
                             <StatusIcon className="w-4 h-4 mr-1" />
                             {order.status}
                           </span>
+                        </td>
+                        <td className="p-3">
+                          <button
+                            onClick={() => setActiveTab('orders')}
+                            className="px-3 py-1 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors text-sm"
+                          >
+                            View Details
+                          </button>
                         </td>
                       </tr>
                     );
@@ -279,66 +304,153 @@ const DishDashAdmin = () => {
           )}
         </div>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h4 className="font-semibold text-gray-800 mb-2">Quick Actions</h4>
-            <div className="space-y-2">
-              <button
-                onClick={() => setActiveTab('orders')}
-                className="w-full text-left px-3 py-2 rounded hover:bg-gray-100 transition-colors"
-              >
-                <Clock className="w-4 h-4 inline mr-2" />
-                View All Orders
-              </button>
-              <button
-                onClick={() => setActiveTab('foods')}
-                className="w-full text-left px-3 py-2 rounded hover:bg-gray-100 transition-colors"
-              >
-                <ChefHat className="w-4 h-4 inline mr-2" />
-                Manage Food Items
-              </button>
+        {/* Customer Insights */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h4 className="text-lg font-semibold mb-4" style={{ color: '#7B4019' }}>Order Summary</h4>
+            <div className="space-y-3">
+              {Object.entries(
+                ordersData.reduce((acc, order) => {
+                  acc[order.status] = (acc[order.status] || 0) + 1;
+                  return acc;
+                }, {})
+              ).map(([status, count]) => {
+                const StatusIcon = statusIcons[status] || Clock;
+                return (
+                  <div key={status} className="flex justify-between items-center">
+                    <div className="flex items-center">
+                      <StatusIcon className="w-4 h-4 mr-2 text-gray-500" />
+                      <span className="capitalize">{status}</span>
+                    </div>
+                    <span className="font-semibold">{count}</span>
+                  </div>
+                );
+              })}
             </div>
-          </div>
-
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h4 className="font-semibold text-gray-800 mb-2">System Status</h4>
-            <div className="space-y-2">
-              <div className="flex items-center">
-                <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                <span className="text-sm text-gray-600">API Connected</span>
-              </div>
-              <div className="flex items-center">
-                <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                <span className="text-sm text-gray-600">Database Online</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h4 className="font-semibold text-gray-800 mb-2">Last Updated</h4>
-            <p className="text-sm text-gray-600">
-              {new Date().toLocaleString()}
-            </p>
-            <p className="text-xs text-gray-500 mt-1">
-              Auto-refreshes every 30 seconds
-            </p>
           </div>
         </div>
       </div>
     );
   };
 
-  const renderOrders = () => (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold" style={{ color: '#7B4019' }}>Order Management</h2>
+  const renderOrders = () => {
+    if (loading) {
+      return <div className="text-center py-8">Loading orders...</div>;
+    }
+
+    if (error) {
+      return (
+        <div className="text-center py-8 text-red-500">
+          <p>{error}</p>
+          <button
+            onClick={fetchAllData}
+            className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+          >
+            Retry
+          </button>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold" style={{ color: '#7B4019' }}>Order Management</h2>
+          <div className="flex gap-2">
+            <button
+              onClick={fetchAllData}
+              className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
+            >
+              Refresh Orders
+            </button>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left p-3">Order ID</th>
+                  <th className="text-left p-3">Customer Details</th>
+                  <th className="text-left p-3">Items & Quantity</th>
+                  <th className="text-left p-3">Total Amount</th>
+                  <th className="text-left p-3">Delivery Address</th>
+                  <th className="text-left p-3">Status</th>
+                  <th className="text-left p-3">Update Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ordersData.map(order => {
+                  const StatusIcon = statusIcons[order.status] || Clock;
+                  return (
+                    <tr key={order.orderId} className="border-b hover:bg-gray-50">
+                      <td className="p-3 font-mono">#{order.orderId}</td>
+                      <td className="p-3">
+                        <div>
+                          <p className="font-semibold text-gray-800">{order.fullName}</p>
+                          <p className="text-sm text-gray-600">{order.email}</p>
+                          <p className="text-sm text-gray-600">{order.phoneNumber}</p>
+                        </div>
+                      </td>
+                      <td className="p-3">
+                        <div className="max-w-xs">
+                          {order.items && Array.isArray(order.items) ? (
+                            <div className="space-y-1">
+                              {order.items.map((item, index) => (
+                                <div key={index} className="text-sm">
+                                  <span className="font-medium">{foodNames[item.foodId] || item.foodId}</span>
+                                  <span className="text-gray-600"> × {item.quantity}</span>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <span className="text-gray-500">No items</span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="p-3">
+                        <span className="text-lg font-bold text-green-600">
+                          ${(order.total || 0).toFixed(2)}
+                        </span>
+                      </td>
+                      <td className="p-3">
+                        <div className="flex items-start">
+                          <MapPin className="w-4 h-4 mt-1 mr-1 text-gray-400" />
+                          <span className="text-sm text-gray-600">{order.address}</span>
+                        </div>
+                      </td>
+                      <td className="p-3">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm ${statusColors[order.status]}`}>
+                          <StatusIcon className="w-4 h-4 mr-1" />
+                          <span className="capitalize">{order.status}</span>
+                        </span>
+                      </td>
+                      <td className="p-3">
+                        <select
+                          value={order.status}
+                          onChange={(e) => handleStatusChange(order.orderId, e.target.value)}
+                          className="px-3 py-1 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          style={{ borderColor: '#FF7D29' }}
+                        >
+                          <option value="pending">Pending</option>
+                          <option value="preparing">Preparing</option>
+                          <option value="cooking">Cooking</option>
+                          <option value="delivery">Out for Delivery</option>
+                          <option value="completed">Completed</option>
+                          <option value="rejected">Rejected</option>
+                        </select>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <Orders />
-      </div>
-    </div>
-  );
+    );
+  };
 
   const renderFoods = () => (
     <div className="space-y-6">
@@ -352,7 +464,9 @@ const DishDashAdmin = () => {
           Add New Food
         </button>
       </div>
-      <FoodDisplay />
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <p className="text-center text-gray-500 py-8">Food management component would go here</p>
+      </div>
     </div>
   );
 
