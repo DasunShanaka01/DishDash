@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext.jsx';
+import webLOgo from '../../assets/DisDashLogo.jpg'; 
 
 const Login = () => {
   const [formData, setFormData] = useState({ phone: '', password: '' });
@@ -80,9 +81,9 @@ const Login = () => {
             {/* Logo */}
             <div className="text-center mb-8">
               <img 
-                src="https://i.ibb.co/5KqY1bG/food-delivery-logo.png" 
+                src={webLOgo}
                 alt="Dish Dash Logo"
-                className="h-20 mx-auto mb-4"
+                className="h-25 mx-auto mb-4"
               />
               <h2 className="text-3xl font-bold text-white">Welcome Back!</h2>
               <p className="text-white/80 mt-2">Sign in to continue your food journey</p>
