@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Clock, Truck, CheckCircle, XCircle, ChefHat, Package, Plus, Edit, Eye, MapPin } from 'lucide-react';
 import FoodDisplay from '../FoodDisplay/FoodDisplay';
+import axios from 'axios';
+import Orders from './Orders';
 
 const DishDashAdmin = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -142,27 +144,13 @@ const DishDashAdmin = () => {
   // Handle order status update
   const handleStatusChange = async (orderId, newStatus) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/order-places/${orderId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status: newStatus })
+      const response = await axios.put(`${API_BASE_URL}/api/v1/order-places/${orderId}/status`, {
+        status: newStatus
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to update order status');
-      }
-
-      // Update local state
-      setOrdersData(orders => 
-        orders.map(order => 
-          order.orderId === orderId ? { ...order, status: newStatus } : order
-        )
-      );
-
-      // Refresh dashboard data
-      fetchAllData();
+      console.log('Update response:', response.data); // Log update response
+      setOrders(orders.map(order =>
+        order.orderId === orderId ? { ...order, status: newStatus } : order
+      ));
     } catch (err) {
       console.error('Update error:', err);
       setError('Failed to update order status: ' + err.message);
@@ -369,84 +357,7 @@ const DishDashAdmin = () => {
 
         <div className="bg-white p-6 rounded-lg shadow-md">
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left p-3">Order ID</th>
-                  <th className="text-left p-3">Customer Details</th>
-                  <th className="text-left p-3">Items & Quantity</th>
-                  <th className="text-left p-3">Total Amount</th>
-                  <th className="text-left p-3">Delivery Address</th>
-                  <th className="text-left p-3">Status</th>
-                  <th className="text-left p-3">Update Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {ordersData.map(order => {
-                  const StatusIcon = statusIcons[order.status] || Clock;
-                  return (
-                    <tr key={order.orderId} className="border-b hover:bg-gray-50">
-                      <td className="p-3 font-mono">#{order.orderId}</td>
-                      <td className="p-3">
-                        <div>
-                          <p className="font-semibold text-gray-800">{order.fullName}</p>
-                          <p className="text-sm text-gray-600">{order.email}</p>
-                          <p className="text-sm text-gray-600">{order.phoneNumber}</p>
-                        </div>
-                      </td>
-                      <td className="p-3">
-                        <div className="max-w-xs">
-                          {order.items && Array.isArray(order.items) ? (
-                            <div className="space-y-1">
-                              {order.items.map((item, index) => (
-                                <div key={index} className="text-sm">
-                                  <span className="font-medium">{foodNames[item.foodId] || item.foodId}</span>
-                                  <span className="text-gray-600"> × {item.quantity}</span>
-                                </div>
-                              ))}
-                            </div>
-                          ) : (
-                            <span className="text-gray-500">No items</span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="p-3">
-                        <span className="text-lg font-bold text-green-600">
-                          ${(order.total || 0).toFixed(2)}
-                        </span>
-                      </td>
-                      <td className="p-3">
-                        <div className="flex items-start">
-                          <MapPin className="w-4 h-4 mt-1 mr-1 text-gray-400" />
-                          <span className="text-sm text-gray-600">{order.address}</span>
-                        </div>
-                      </td>
-                      <td className="p-3">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm ${statusColors[order.status]}`}>
-                          <StatusIcon className="w-4 h-4 mr-1" />
-                          <span className="capitalize">{order.status}</span>
-                        </span>
-                      </td>
-                      <td className="p-3">
-                        <select
-                          value={order.status}
-                          onChange={(e) => handleStatusChange(order.orderId, e.target.value)}
-                          className="px-3 py-1 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
-                          style={{ borderColor: '#FF7D29' }}
-                        >
-                          <option value="pending">Pending</option>
-                          <option value="preparing">Preparing</option>
-                          <option value="cooking">Cooking</option>
-                          <option value="delivery">Out for Delivery</option>
-                          <option value="completed">Completed</option>
-                          <option value="rejected">Rejected</option>
-                        </select>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            <Orders/>
           </div>
         </div>
       </div>
@@ -457,13 +368,6 @@ const DishDashAdmin = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold" style={{ color: '#7B4019' }}>Food Management</h2>
-        <button
-          className="px-4 py-2 rounded-lg text-white flex items-center gap-2 hover:opacity-90 transition-opacity"
-          style={{ backgroundColor: '#FF7D29' }}
-        >
-          <Plus className="w-4 h-4" />
-          Add New Food
-        </button>
       </div>
       <div className="bg-white p-6 rounded-lg shadow-md">
         <FoodDisplay />

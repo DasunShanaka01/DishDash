@@ -113,10 +113,7 @@ const Orders = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold" style={{ color: '#7B4019' }}>Order Management</h2>
-      </div>
-
+      
       <div className="bg-white p-6 rounded-lg shadow-md">
         <div className="overflow-x-auto">
           <table className="w-full">

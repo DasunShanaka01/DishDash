@@ -10,7 +10,7 @@ const FoodDisplay = () => {
   const [searchCategory, setSearchCategory] = useState("");
   const [editingFood, setEditingFood] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [categories] = useState(["Appetizer", "Main Course", "Dessert", "Beverage", "Snack"]);
+  const [categories] = useState(["Pizzas", "Burgers", "Sushi", "Desserts", "Tacos", "Salads"]);
 
   const [formData, setFormData] = useState({
     name: "",
