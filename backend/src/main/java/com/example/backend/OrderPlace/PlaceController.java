@@ -52,7 +52,7 @@ public class PlaceController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}/status")
+    @PutMapping("/{id}/status")
     public ResponseEntity<Place> updateOrderStatus(
             @PathVariable ObjectId id,
             @RequestBody Map<String, String> statusUpdate) {

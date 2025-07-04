@@ -90,11 +90,11 @@ const Orders = () => {
   // Handle status update
   const handleStatusChange = async (orderId, newStatus) => {
     try {
-      const response = await axios.put(`${API_BASE_URL}/api/v1/order-places/${orderId}`, {
+      const response = await axios.put(`${API_BASE_URL}/api/v1/order-places/${orderId}/status`, {
         status: newStatus
       });
       console.log('Update response:', response.data); // Log update response
-      setOrders(orders.map(order => 
+      setOrders(orders.map(order =>
         order.orderId === orderId ? { ...order, status: newStatus } : order
       ));
     } catch (err) {
