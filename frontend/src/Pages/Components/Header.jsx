@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import webLOgo from '../../assets/DisDashLogo.jpg';
 
 const Header = ({ cartItems = 0, cartTotal = 0 }) => {
   const { isAuthenticated, userId, checkSession } = useAuth();
@@ -53,18 +54,13 @@ const Header = ({ cartItems = 0, cartTotal = 0 }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-xl"
-              style={{
-                background: "linear-gradient(135deg, #7B4019 0%, #FF7D29 100%)",
-              }}
-            >
-              DD
-            </div>
-            <h1 className="text-2xl font-bold" style={{ color: "#7B4019" }}>
-              Dish Dash
-            </h1>
+          <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate("/home")}>
+            <img
+              src={webLOgo}
+              alt="Dish Dash Logo"
+              className="h-12 w-20 rounded-md"
+            />
+            <span className="text-xl font-bold text-orange-600">Dish Dash</span>
           </div>
 
           {/* Location & Search */}

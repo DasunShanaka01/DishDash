@@ -1,4 +1,6 @@
 import React from 'react';
+import webLOgo from '../../assets/DisDashLogo.jpg';
+
 import { 
   Phone,
   Mail,
@@ -40,7 +42,7 @@ const Footer = () => {
   };
 
   return (
-    <footer style={{ backgroundColor: '#7B4019' }}>
+    <footer style={{ backgroundColor: '#bf5d1e' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main Footer Content */}
@@ -49,15 +51,11 @@ const Footer = () => {
             
             {/* Brand Section */}
             <div className="lg:col-span-2">
-              <div className="flex items-center space-x-2 mb-4">
-                <div 
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-xl"
-                  style={{ backgroundColor: '#FF7D29' }}
-                >
-                  DD
-                </div>
-                <h3 className="text-2xl font-bold text-white">Dish Dash</h3>
-              </div>
+              <img 
+                src={webLOgo}
+                alt="Dish Dash Logo"
+                className="h-18 w-25 rounded-md"
+              />
               <p className="text-gray-300 mb-6 max-w-md">
                 Delivering happiness, one meal at a time. Fresh ingredients, 
                 fast delivery, and unforgettable flavors right to your doorstep.
