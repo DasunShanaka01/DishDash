@@ -118,15 +118,11 @@ DishDash/
 🛠️ How to Run
 Backend (Spring Boot)
 bash
-Copy
-Edit
 cd backend
 ./mvnw spring-boot:run
 
 Frontend (React)
 bash
-Copy
-Edit
 cd frontend
 npm install
 npm start
@@ -150,9 +146,4 @@ Your Name
 
 © 2025 Dish Dash — All rights reserved.
 
-yaml
-Copy
-Edit
-
----
 
